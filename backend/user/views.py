@@ -7,16 +7,47 @@ from user.models import User
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import parser_classes
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.parsers import FileUploadParser,MultiPartParser,JSONParser
 # def index(request):
 #     # return Response({'key': 'hello'}, status=status.HTTP_200_OK)
 #     return JsonResponse({'key': 'hello'})
 
+def jwt_response_payload_handler(token, user=None, request=None):
+    return {
+        'auth': {'token': token},
+        'avatar': user.avatar.url,
+    }
+
+class register(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request, format=None):
+
+        username = request.data.get('username', None)
+        email = request.data.get('email', None)
+        password = request.data.get('password', None)
+        print(username, email, password)
+        if None in (username, email, password):
+            return Response({'error': 'Parameter errors'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            User.objects.create_user(username=username, email=email, password=password)
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'response': 'success'}, status=status.HTTP_200_OK)
+
+
 class userinfo(APIView):
     parser_classes = (MultiPartParser,)
     def get(self, request, format=None):
+        print(request.user.id)
+        print(request.user.email)
+        print(request.user.registeredTime)
         try:
-            user = User.objects.get(username=request.user)
+            user = User.objects.get(pk=request.user.id)
         except:
             return Response({"errors": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         userinfo = {}
@@ -38,7 +69,7 @@ class userinfo(APIView):
         if None in (nickname, signature, avatar):
             return Response({'error': 'Parameter errors'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = User.objects.get(username=request.user)
+            user = User.objects.get(pk=request.user.id)
         except Exception as e:
             print(e)
             return Response({'error': 'Not exited user'}, status=status.HTTP_400_BAD_REQUEST)
@@ -49,19 +80,4 @@ class userinfo(APIView):
         user.save()
         return Response({'response': 'success'}, status=status.HTTP_200_OK)
 
-    def post(self, request, format=None):
 
-        username = request.data.get('username', None)
-        email = request.data.get('email', None)
-        password = request.data.get('password', None)
-        print(username, email, password)
-        if None in (username, email, password):
-            return Response({'error': 'Parameter errors'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            User.objects.create_user(username=username, email=email, password=password)
-        except Exception as e:
-            print(e)
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({'response': 'success'},status=status.HTTP_200_OK)

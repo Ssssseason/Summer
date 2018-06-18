@@ -4,6 +4,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../views/login/actions';
+import { ROOT_URL } from '../config/config';
 
 
 class UserAvatar extends Component {
@@ -24,7 +25,7 @@ class UserAvatar extends Component {
                         event.preventDefault();
                         this.setState({ anchorEl: event.currentTarget });
                     }}
-                    src={avatar}
+                    src={`${ROOT_URL}/${avatar}`}
                 />
                 <Menu open={Boolean(anchorEl)}
                     anchorEl={anchorEl} anchorOrigin={{

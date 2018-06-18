@@ -51,7 +51,6 @@ class NavBar extends Component {
     render() {
         const { auth, classes, history } = this.props;
         const { value } = this.state;
-        console.log(history);
         return (
             <div>
                 <AppBar position="static" color="primary">

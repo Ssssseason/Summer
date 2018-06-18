@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 class WordBook(models.Model):
     name = models.CharField(max_length=50, unique=True, blank=False)
     introduction = models.CharField(max_length=500, blank=True)
-    cover = models.ImageField(default='assets/user/aa.jpg', upload_to='assets/wordbook')
+    cover = models.ImageField(default='user/aa.jpg', upload_to='wordbook')
     creator = models.ForeignKey("user.User", default=1, on_delete=models.CASCADE)
 
 class Word(models.Model):
@@ -16,7 +16,7 @@ class Word(models.Model):
 class Pronunciation(models.Model):
     word = models.ForeignKey('Word', on_delete=models.CASCADE)
     phoneme = models.CharField(max_length=50, blank=False, default='ŋ')
-    audio = models.FileField(upload_to='asssets/word', blank=False)
+    audio = models.FileField(upload_to='word', blank=False)
 
 class Definition(models.Model):
     word = models.ForeignKey('Word', on_delete=models.CASCADE, blank=False)

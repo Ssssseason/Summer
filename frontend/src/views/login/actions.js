@@ -13,10 +13,18 @@ export const login = (username, password) => {
         dispatch({
             type: LOGIN_REQ,
         });
-        axios.post(`${ROOT_URL}/api/login`, {
-            username,
-            password,
-        })
+
+        const body = new FormData();
+        body.append('username', username);
+        body.append('password', password);
+
+        axios.post(`${ROOT_URL}/api/user/token_auth`, body,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+
+            })
             .then((response) => {
                 dispatch({
                     type: LOGIN_SUCCESS,
@@ -44,7 +52,7 @@ export const register = (username, email, password) => {
         if (isRegistering)
             return;
         dispatch({ type: REG_REQ });
-        axios.post(`${ROOT_URL}/api/register`, {
+        axios.post(`${ROOT_URL}/api/user/register`, {
             username,
             email,
             password,
@@ -53,7 +61,7 @@ export const register = (username, email, password) => {
                 dispatch({
                     type: REG_SUCCESS,
                 })
-                login(username, password);
+                dispatch(login(username, password));
             })
             .catch((error) => {
                 console.log(error);

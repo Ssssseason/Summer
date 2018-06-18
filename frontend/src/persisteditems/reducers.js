@@ -1,11 +1,11 @@
 import { LOGOUT, LOGIN_SUCCESS, LOGIN_FAILURE } from '../views/login/actions';
+import { ROOT_URL } from '../config/config';
 
 const initialState = {
     auth: { 'token': "" },
     // auth: undefined,
-    avatar: "https://api.adorable.io/avatars/144/userpic.png",
+    avatar: `assets/user/aa.jpg`,
 }
-
 
 export const persistedItemsReducer = (state = initialState, action) => {
     switch (action.type) {

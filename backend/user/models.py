@@ -25,30 +25,20 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, username, email, password, **kwargs):
-        user = self._create_user(username, email, password)
+        user = self._create_user(username, email, password, **kwargs)
         user.is_admin = False
         user.is_staff = False
         user.is_superuser = False
         user.save(using=self._db)
-        # kwargs.setdefault('is_superuser', False)
-        # kwargs.setdefault('is_admin', False)
-        # kwargs.setdefault('is_staff', False)
         return user
 
     def create_superuser(self, username, email, password, **kwargs):
-        user = self._create_user(username, email, password)
+        user = self._create_user(username, email, password, **kwargs)
         user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
-        # kwargs.setdefault('is_superuser', False)
-        # kwargs.setdefault('is_admin', False)
-        # kwargs.setdefault('is_staff', False)
         return user
-        # kwargs.setdefault('is_superuser', True)
-        # kwargs.setdefault('is_admin', True)
-        # kwargs.setdefault('is_staff', True)
-        # return self._create_user(username, email, password, **kwargs)
 
 
 class User(AbstractBaseUser):
@@ -60,7 +50,7 @@ class User(AbstractBaseUser):
     nickname = models.CharField(max_length=20, blank=False, default='用户')
     signature = models.CharField(max_length=100, blank=False, default='这个人很懒，什么都没有写~')
     # TODO: correct avatar
-    avatar = models.ImageField(default='assets/user/aa.jpg', upload_to='assets/user/')
+    avatar = models.ImageField(default='user/aa.jpg', upload_to='user/')
 
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -84,8 +74,3 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
-    # @property
-    # def is_staff(self):
-    #     "Is the user a member of staff?"
-    #     # Simplest possible answer: All admins are staff
-    #     return self.is_admin

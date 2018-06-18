@@ -68,7 +68,6 @@ class SigninTextField extends Component {
                     className = {classes.button}
                     onClick={(event) => {
                         event.preventDefault();
-                        console.log("username", username, "pw", password);
                         login(username, password);
                     }}>
                     登录

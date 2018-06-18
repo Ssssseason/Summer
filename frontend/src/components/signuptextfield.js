@@ -84,7 +84,6 @@ class SignupTextField extends Component {
                     className={classes.button}
                     onClick={(event) => {
                         event.preventDefault();
-                        console.log("username", username, "email", email, "pw", password);
                         if (username.length < 6 || email.length < 6) {
                             this.setState({
                                 isDiaglogOpen: true,
