@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'user.apps.UserConfig',
+    'word.apps.WordConfig',
+    'recitation.apps.RecitationConfig',
 ]
 
 MIDDLEWARE = [

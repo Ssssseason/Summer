@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from user import models
+from user.models import User
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import parser_classes
@@ -16,7 +16,7 @@ class userinfo(APIView):
     parser_classes = (MultiPartParser,)
     def get(self, request, format=None):
         try:
-            user = models.User.objects.get(username=request.user)
+            user = User.objects.get(username=request.user)
         except:
             return Response({"errors": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         userinfo = {}
@@ -38,7 +38,7 @@ class userinfo(APIView):
         if None in (nickname, signature, avatar):
             return Response({'error': 'Parameter errors'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = models.User.objects.get(username=request.user)
+            user = User.objects.get(username=request.user)
         except Exception as e:
             print(e)
             return Response({'error': 'Not exited user'}, status=status.HTTP_400_BAD_REQUEST)
@@ -59,7 +59,7 @@ class userinfo(APIView):
             return Response({'error': 'Parameter errors'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            models.User.objects.create_user(username=username, email=email, password=password)
+            User.objects.create_user(username=username, email=email, password=password)
         except Exception as e:
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
