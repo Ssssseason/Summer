@@ -4,29 +4,52 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Link, withRouter } from 'react-router-dom';
 import Main from './views/main';
 import './App.css';
-import store from './store';
+import { store, persistor } from './store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { CircularProgress } from '@material-ui/core';
+import { connect } from 'react-redux';
+import Summer from './views/summer';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import NavBar from './containers/navbar';
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            light: '#009897B',
+            main: '#00796B',
+            dark: '#004D40',
+            contrastText: '#ffffff',
+        },
+        secondary: {
+            light: '#f9683a',
+            main: '#bf360c',
+            dark: '#870000',
+            contrastText: '#fff',
+        }
+    },
+});
 
 class App extends React.Component {
-  render() {
-    return (
-      // <div className="App">
-      //   <header className="App-header">
-      //     <img src={logo} className="App-logo" alt="logo" />
-      //     <h1 className="App-title">Welcome to React</h1>
-      //   </header>
-      //   <p className="App-intro">
-      //     To get started, edit <code>src/App.js</code> and save to reload.
-      //   </p>
-      // </div>
-      <Provider store={store}>
-        <BrowserRouter>
-          <div>
-            <Route exact path={'/'} component={Main} />
-          </div>
-        </BrowserRouter>
-      </Provider>
-    );
-  }
+    render() {
+        return (
+            // <div className="App">
+            //   <header className="App-header">
+            //     <img src={logo} className="App-logo" alt="logo" />
+            //     <h1 className="App-title">Welcome to React</h1>
+            //   </header>
+            //   <p className="App-intro">
+            //     To get started, edit <code>src/App.js</code> and save to reload.
+            //   </p>
+            // </div>
+            <Provider store={store}>
+                <PersistGate loading={<CircularProgress />} persistor={persistor} >
+                    <MuiThemeProvider theme={theme}>
+                        <Summer />
+                    </MuiThemeProvider>
+                </PersistGate>
+            </Provider>
+        );
+    }
 }
 
 export default App;

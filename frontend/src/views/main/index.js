@@ -11,7 +11,9 @@ const styles = {
 class Main extends React.Component{
     render(){
         return (
-            <Paper>hello jyx</Paper>
+            <Paper>hello jyx
+
+            </Paper>
         )
     }
 }
