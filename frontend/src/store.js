@@ -6,6 +6,7 @@ import thunk from 'redux-thunk';
 import { combineReducers } from 'redux';
 import { persistedItemsReducer } from "./persisteditems/reducers";
 import { loginReducer } from "./views/login/reducers";
+import { recitationReducer } from "./views/recitation/reducers";
 
 const rootReducer = persistReducer(
     {
@@ -17,6 +18,7 @@ const rootReducer = persistReducer(
         persisteditems: persistedItemsReducer,
         main: mainReducer,
         login: loginReducer,
+        recitation: recitationReducer,
     })
 )
 // const rootReducer = combineReducers({

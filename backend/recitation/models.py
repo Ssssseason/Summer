@@ -11,7 +11,7 @@ class Recitation(models.Model):
     user = models.ForeignKey('user.User', on_delete=models.CASCADE, blank=False)
     word = models.ForeignKey('word.Word', on_delete=models.CASCADE, blank=False)
     duration = models.DurationField(default=datetime.timedelta(days=1))
-    lastRecitedTime = models.DateTimeField(auto_now=True)
+    lastRecitedTime = models.DateField(auto_now=True)
     recitedTimeCount = models.IntegerField(default=0, blank=False)
     successTimeCount = models.IntegerField(default=0, blank=False)
 
@@ -20,6 +20,6 @@ class Recitation(models.Model):
 
 class Plan(models.Model):
     user = models.ForeignKey('user.User', on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
     word = models.ForeignKey('word.Word', on_delete=models.CASCADE)
     isChecked = models.BooleanField(default=False, blank=False)

@@ -10,9 +10,6 @@ from rest_framework.decorators import parser_classes
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import FileUploadParser,MultiPartParser,JSONParser
-# def index(request):
-#     # return Response({'key': 'hello'}, status=status.HTTP_200_OK)
-#     return JsonResponse({'key': 'hello'})
 
 def jwt_response_payload_handler(token, user=None, request=None):
     return {

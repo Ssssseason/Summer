@@ -6,6 +6,7 @@ import { CircularProgress, AppBar } from '@material-ui/core';
 import { connect } from 'react-redux';
 import NavBar from '../containers/navbar';
 import Login from '../views/login';
+import Recitation from '../views/recitation';
 
 
 class Summer extends React.Component {
@@ -13,7 +14,10 @@ class Summer extends React.Component {
         const { auth } = this.props;
         return (
             <BrowserRouter>
-                <div>
+                <div style={{
+                    backgroundColor: '#f0f0ee',
+                    minHeight: '100vh', // TODO: tmp solution for background color 
+                }}>
                     <Route path={'/'} component={NavBar} />
                     {!auth ?
                         <Switch>
@@ -26,6 +30,7 @@ class Summer extends React.Component {
                             <Route path={'/login'} render={() => (<Login type='login' />)} />
                             <Route path={'/register_login'} render={() => (<Login type='register_login' />)} />
                             <Route path={'/main'} component={Main} />
+                            <Route path={'/recitation'} component={Recitation} />
                         </Switch>
                     }
                 </div>

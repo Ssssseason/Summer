@@ -1,0 +1,100 @@
+{
+    "words": [
+        {
+            "id": 1,
+            "content": "apple",
+            "pronunciation": [
+                {
+                    "phoneme": "apple",
+                    "audio": "word/apple.mp3"
+                },
+                {
+                    "phoneme": "apple2",
+                    "audio": "word/apple2.mp3"
+                }
+            ],
+            "definition": [
+                {
+                    "type": "n",
+                    "meaning": "苹果"
+                },
+                {
+                    "type": "abc",
+                    "meaning": "苹果2"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "content": "pen",
+            "pronunciation": [
+                {
+                    "phoneme": "pen",
+                    "audio": "word/apple.mp3"
+                },
+                {
+                    "phoneme": "pen2",
+                    "audio": "word/apple2.mp3"
+                }
+            ],
+            "definition": [
+                {
+                    "type": "n",
+                    "meaning": "笔"
+                },
+                {
+                    "type": "abc",
+                    "meaning": "笔2"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "content": "applepen",
+            "pronunciation": [
+                {
+                    "phoneme": "applepen",
+                    "audio": "word/applepen.mp3"
+                },
+                {
+                    "phoneme": "applepen2",
+                    "audio": "word/applepen2.mp3"
+                }
+            ],
+            "definition": [
+                {
+                    "type": "n",
+                    "meaning": "苹果笔"
+                },
+                {
+                    "type": "abc",
+                    "meaning": "苹果笔2"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "content": "apple",
+            "pronunciation": [
+                {
+                    "phoneme": "apple",
+                    "audio": "word/apple.mp3"
+                },
+                {
+                    "phoneme": "apple2",
+                    "audio": "word/apple2.mp3"
+                }
+            ],
+            "definition": [
+                {
+                    "type": "n",
+                    "meaning": "苹果"
+                },
+                {
+                    "type": "abc",
+                    "meaning": "苹果2"
+                }
+            ]
+        }
+    ]
+}

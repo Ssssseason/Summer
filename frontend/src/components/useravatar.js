@@ -38,14 +38,14 @@ class UserAvatar extends Component {
                     }}
                     getContentAnchorEl={null}
                     onClose={(event) => { console.log("exit"); this.setState({ anchorEl: null }); }}>
-                    <Divider />
+                    {/* <Divider />
                     <MenuItem onClick={(event) => {
                         event.preventDefault();
                         this.setState({ anchorEl: null });
                         history.push('/setting')
                     }}>
                         <Typography variant="body1">学习设置</Typography>
-                    </MenuItem>
+                    </MenuItem> */}
                     <MenuItem onClick={(event) => {
                         event.preventDefault();
                         this.setState({ anchorEl: null });

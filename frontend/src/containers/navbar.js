@@ -6,7 +6,7 @@ import { BlurOn } from '@material-ui/icons';
 import { Avatar, Tab, Tabs, AppBar, Toolbar, Typography } from '@material-ui/core';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
-import UserAvatar from '../../components/useravatar';
+import UserAvatar from '../components/useravatar';
 
 const styles = theme => ({
     title: {
@@ -41,9 +41,15 @@ class NavBar extends Component {
             else if (value == 1) {
                 this.props.history.push('/recitation');
             }
-            else if (value == 2) {
+            else if(value == 2){
+                this.props.history.push('/exam');
+            }
+            else if (value == 3) {
                 this.props.history.push('/userdefined');
-            };
+            }
+            else if(value == 4){
+                this.props.history.push('/setting');
+            }
         }
     };
 
@@ -64,12 +70,14 @@ class NavBar extends Component {
                             textColor="inherit"
                             scrollable
                             scrollButtons="auto"
-                            fullWidth
+                            // fullWidth
                             className={classes.tabs}
                         >
                             <Tab label="首页" />
-                            <Tab label="背单词" />
+                            <Tab label="背诵" />
+                            <Tab label="考核"/>
                             <Tab label="自定义" />
+                            <Tab label="设置"/>
                         </Tabs>
                         {auth ? <UserAvatar history={history} />
                             :

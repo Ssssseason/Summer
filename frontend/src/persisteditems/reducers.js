@@ -2,9 +2,9 @@ import { LOGOUT, LOGIN_SUCCESS, LOGIN_FAILURE } from '../views/login/actions';
 import { ROOT_URL } from '../config/config';
 
 const initialState = {
-    auth: { 'token': "" },
+    auth: undefined,
     // auth: undefined,
-    avatar: `assets/user/aa.jpg`,
+    avatar: undefined,
 }
 
 export const persistedItemsReducer = (state = initialState, action) => {
