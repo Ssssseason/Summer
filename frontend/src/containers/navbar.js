@@ -7,6 +7,7 @@ import { Avatar, Tab, Tabs, AppBar, Toolbar, Typography } from '@material-ui/cor
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import UserAvatar from '../components/useravatar';
+import { setNavBarVal } from '../views/main/actions';
 
 const styles = theme => ({
     title: {
@@ -23,40 +24,34 @@ const styles = theme => ({
 });
 
 class NavBar extends Component {
-
     constructor() {
         super();
-        this.state = {
-            value: 0,
-        };
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange = (event, value) => {
-        this.setState({ value });
         if (this.props.auth) {
+            this.props.setNavBarVal(value);
             if (value == 0) {
                 this.props.history.push('/main');
             }
             else if (value == 1) {
                 this.props.history.push('/recitation');
             }
-            else if(value == 2){
+            else if (value == 2) {
                 this.props.history.push('/exam');
             }
             else if (value == 3) {
                 this.props.history.push('/userdefined');
             }
-            else if(value == 4){
-                this.props.history.push('/setting');
+            else if (value == 4) {
+                this.props.history.push('/wordbook/category');
             }
         }
     };
 
-
     render() {
-        const { auth, classes, history } = this.props;
-        const { value } = this.state;
+        const { auth, classes, history, navBarVal, setNavBarVal } = this.props;
         return (
             <div>
                 <AppBar position="static" color="primary">
@@ -65,19 +60,20 @@ class NavBar extends Component {
                             SUMMER
                         </Typography>
                         <Tabs
-                            value={value}
+                            // value={navBarVal}
+                            value={false}
                             onChange={this.handleChange}
                             textColor="inherit"
                             scrollable
                             scrollButtons="auto"
-                            // fullWidth
+                            fullWidth
                             className={classes.tabs}
                         >
                             <Tab label="首页" />
                             <Tab label="背诵" />
-                            <Tab label="考核"/>
+                            <Tab label="考核" />
                             <Tab label="自定义" />
-                            <Tab label="设置"/>
+                            <Tab label="单词书" />
                         </Tabs>
                         {auth ? <UserAvatar history={history} />
                             :
@@ -105,13 +101,14 @@ NavBar.propTypes = {
 const mapStateToProps = (state) => (
     {
         auth: state.persisteditems.auth,
+        navBarVal: state.main.navBarVal,
     }
 )
 
-const mapDispatchToProps = (dispatch) => {
-    return ({
-
-    })
-};
+const mapDispatchToProps = (dispatch) => ({
+    setNavBarVal: (navBarVal) => {
+        dispatch(setNavBarVal(navBarVal));
+    },
+})
 
 export default compose(connect(mapStateToProps, mapDispatchToProps), withStyles(styles))(NavBar);

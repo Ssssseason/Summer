@@ -103,7 +103,6 @@ class RecitingPlan extends Component {
                     }
                 </div>
             </div>
-
         )
     }
 }

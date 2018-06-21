@@ -34,21 +34,23 @@ class RecitingWord extends Component {
             const { content, phoneme, audio } = words[idx];
             return (
                 <div>
+                    <div style={{minHeight: 500}}>
                     <WordDetail showAll={showAll} word={words[idx]} />
+                    </div>
                     {showAll ?
-                        <Button variant="raied" color="primary" onClick={(event) => {
+                        <Button fullWidth variant="raised" color="primary" style={{marginTop: 10, marginBottom: 10}} onClick={(event) => {
                             event.preventDefault();
                             this.setState({ showAll: false, idx: idx + 1 });
                         }}>下一个</Button>
                         :
                         <div>
-                            <Button variant="raised" color="primary" onClick={(event) => {
+                            <Button fullWidth variant="raised" color="primary" style={{marginTop: 10, marginBottom: 1}} onClick={(event) => {
                                 event.preventDefault();
                                 const newCheckedRes = checkedRes;
                                 newCheckedRes.push({ "id": words[idx].id, "checkedRes": true });
                                 this.setState({ showAll: true, checkedRes: newCheckedRes });
                             }}>认识</Button>
-                            <Button variant="raised" color="secondary" onClick={(event) => {
+                            <Button fullWidth variant="raised" color="secondary" style={{marginTop: 10, marginBottom: 1}} onClick={(event) => {
                                 event.preventDefault();
                                 const newCheckedRes = checkedRes;
                                 newCheckedRes.push({ "id": words[idx].id, "checkedRes": false });
@@ -67,7 +69,7 @@ class RecitingWord extends Component {
                             <WordBrief word={word} key={word.id} />
                         )
                     })}
-                    <Button variant="raised" color={"primary"} onClick={(event) => {
+                    <Button fullWidth variant="raised" color={"primary"} onClick={(event) => {
                         event.preventDefault();
                         this.setState({ showAll: false, idx: 0, checkedRes: [] });
                         setCheckedRes(checkedRes);

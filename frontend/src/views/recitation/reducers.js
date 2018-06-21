@@ -1,4 +1,5 @@
 import { SET_ISRECITING, CHECK_REQ, CHECK_SUCCESS, CHECK_FAILURE, RECWORD_SUCCESS, RECWORD_FALIURE, RECPLANNUM_REQ, RECPLANNUM_SUCCESS, RECPLANNUM_FAILURE, RECWORD_REQ } from "./actions";
+import { LOGOUT } from "../login/actions";
 
 const initialState = {
     targetNum: undefined,
@@ -72,6 +73,8 @@ export const recitationReducer = (state = initialState, action) => {
                 doneNum: undefined,
                 error: action.error,
             }))
+        case LOGOUT:
+            return initialState;
         default:
             return state;
     };

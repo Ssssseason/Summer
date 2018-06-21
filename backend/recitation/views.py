@@ -3,10 +3,10 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 # from user.models import User
 from .models import Plan, Recitation, Subscription
-from word.models import Word, Pronunciation, Definition
+from word.models import Word, WordBook
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import F, Case, When, Value, ExpressionWrapper
+from django.db.models import F, Case, When, Value, ExpressionWrapper, Q
 from django.db.models import DateField, FloatField
 import datetime
 from rest_framework.decorators import parser_classes
@@ -14,6 +14,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import FileUploadParser,MultiPartParser,JSONParser
 
+# 调整 batch number
+batchNum = 4
+maxTimes = 4
 class rec_plan(APIView):
     def get(self, request, format=None):
         uid = request.user.id
@@ -22,10 +25,9 @@ class rec_plan(APIView):
             todayPlansNum = todayPlans.count()
 
             if(todayPlansNum > 0):
-                # TODO: 未测试
                 targetNum = Subscription.objects.get(user=uid).targetNumber
                 incNum = todayPlansNum - targetNum
-                doneNum = todayPlans.filter(isChecked=True).count()
+                doneNum = todayPlans.filter(Q(isChecked=True) | Q(times=maxTimes)).count()
             else:
                 targetNum = Subscription.objects.get(user=uid).targetNumber
                 incNum = 0
@@ -45,48 +47,69 @@ class rec_word(APIView):
         if type is None:
             return Response({'error': "Parameter errors"}, status=status.HTTP_400_BAD_REQUEST)
 
-        batchNum = 4
         print(uid)
 
-        try:
-            todayLeftPlans = Plan.objects.select_related('word').filter(user=uid, date=datetime.date.today(), isChecked=False)[:batchNum]
-            print(todayLeftPlans.values_list())
-            if(todayLeftPlans.count()>0):
-                words = [p.word for p in todayLeftPlans]
+        if type == 'recite':
+            try:
+                todayLeftPlans = Plan.objects.select_related('word').filter(user=uid, date=datetime.date.today(), isChecked=False, times__lt=maxTimes)[:batchNum]
+                print(todayLeftPlans.values_list())
+                if(todayLeftPlans.count()>0):
+                    words = [p.word for p in todayLeftPlans]
 
-            else:
+                else:
+                    targetNum = Subscription.objects.get(user=uid).targetNumber
+                    todayDoneWords = Plan.objects.filter(Q(user=uid), Q(date=datetime.date.today()), Q(isChecked=True) | Q(times=maxTimes)).values_list('word')
+
+                    oldWords = Recitation.objects.annotate(priority=ExpressionWrapper(
+                        F('successTimeCount') / (F('recitedTimeCount')+0.1), output_field=FloatField()
+                    )).filter(user=uid)
+
+                    oldWords1 = oldWords.filter(successTimeCount__lt=F('recitedTimeCount') * 0.7)
+                    oldWords2 = oldWords.filter(successTimeCount__gte=F('recitedTimeCount') * 0.7, lastRecitedTime__lt=datetime.date.today()-F('duration'))
+
+                    print(oldWords2.values('word_id', 'word__content'))
+                    # TODO: 调整优先级
+
+                    oldWords = oldWords1.union(oldWords2).exclude(word__in=set(todayDoneWords)).order_by('-priority')[:targetNum]
+                    print(oldWords.values())
+                    for oldWord in oldWords:
+                        Plan.objects.create(user=request.user, word=oldWord.word)
+
+                    oldWordNum = oldWords.count()
+                    if oldWordNum <targetNum:
+                        wordBook = Subscription.objects.get(user=uid).wordbook
+                        recitedWord = Recitation.objects.filter(user=uid)
+                        newWord = Word.objects.filter(wordbook=wordBook).exclude(id__in=recitedWord)[:targetNum-oldWordNum]
+                        for w in newWord:
+                            Recitation.objects.create(user=request.user, word=w)
+                            Plan.objects.create(user=request.user, word=w)
+
+                    todayLeftPlans = Plan.objects.filter(user=uid, date=datetime.date.today(), isChecked=False, times__lt=maxTimes)[:batchNum]
+                    words = [p.word for p in todayLeftPlans]
+
+            except Exception as e:
+                print(e)
+                return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+        elif type == 'review':
+            try:
                 targetNum = Subscription.objects.get(user=uid).targetNumber
-                todayDoneWords = Plan.objects.filter(user=uid, date=datetime.date.today(), isChecked=True).values_list('word')
+                # todayDoneWords = Plan.objects.filter(Q(user=uid), Q(date=datetime.date.today()), Q(isChecked=True) | Q(times=maxTimes)).values_list('word')
 
                 oldWords = Recitation.objects.annotate(priority=ExpressionWrapper(
                     F('successTimeCount') / (F('recitedTimeCount')+0.1), output_field=FloatField()
-                )).filter(user=uid)
+                )).filter(user=uid).order_by('-priority')[:targetNum]
 
-                oldWords1 = oldWords.filter(successTimeCount__lt=F('recitedTimeCount') * 0.8)
-                oldWords2 = oldWords.filter(successTimeCount__gte=F('recitedTimeCount')*0.8, lastRecitedTime__lt=datetime.date.today()+F('duration'))
-
-                print(todayDoneWords.values())
-                # TODO: 调整优先级
-
-                oldWords = oldWords1.union(oldWords2).exclude(word__in=set(todayDoneWords)).order_by('-priority')[:targetNum]
-                print(oldWords.values())
                 for oldWord in oldWords:
                     Plan.objects.create(user=request.user, word=oldWord.word)
 
-                ordWordNum = oldWords.count()
-                if type != 'review' and ordWordNum <targetNum:
-                    wordBook = Subscription.objects.get(user=uid).wordbook
-                    recitedWord = Recitation.objects.filter(user=uid)
-                    newWord = Word.objects.filter(wordbook=wordBook).exclude(id__in=recitedWord)[:targetNum-ordWordNum]
-                    for w in list(newWord):
-                        Recitation.objects.create(user=request.user, word=w)
-                        Plan.objects.create(user=request.user, word=w)
-                todayLeftPlans = Plan.objects.filter(user=uid, date=datetime.date.today(), isChecked=False)[:batchNum]
+                todayLeftPlans = Plan.objects.filter(user=uid, date=datetime.date.today(), isChecked=False, times__lt=maxTimes)[:batchNum]
                 words = [p.word for p in todayLeftPlans]
 
-        except Exception as e:
-            print(e)
-            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+            except Exception as e:
+                print(e)
+                return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
         wordDetails = []
         try:
@@ -94,10 +117,9 @@ class rec_word(APIView):
                 wordDetail = {}
                 wordDetail['id'] = w.id
                 wordDetail['content'] = w.content
-                pronunciation = Pronunciation.objects.filter(word = w)
-                definition = Definition.objects.filter(word=w)
-                wordDetail['pronunciation'] = [{'phoneme': p.phoneme, 'audio': p.audio.url} for p in pronunciation]
-                wordDetail['definition'] = [{'type': d.type, 'meaning': d.meaning} for d in definition]
+                wordDetail['phonetic'] = w.phonetic
+                wordDetail['definition'] = w.definitation.split('\n')
+                wordDetail['translation'] = w.translation.split('\n')
                 wordDetails.append(wordDetail)
         except Exception as e:
             print(e)
@@ -119,28 +141,106 @@ class rec_word(APIView):
             todayPlans = Plan.objects.filter(user=uid, date=datetime.date.today())
             for res in checkedRes:
                 print(res)
-                plan = todayPlans.get(word=res['id'], isChecked=False)
-                plan.isChecked = True
+                plan = todayPlans.get(word=res['id'], isChecked=False, times__lt=maxTimes)
+                plan.isChecked = bool(res['checkedRes'])
+                plan.times += 1
                 plan.save()
                 recitation = Recitation.objects.get(user=uid, word=res['id'])
                 recitation.lastRecitedTime = datetime.date.today()
                 recitation.recitedTimeCount += 1
                 recitation.successTimeCount += int(res['checkedRes'])
-                if(res['checkedRes']):
+
+                if res['checkedRes']:
                     # TODO: 完善背单词算法
                     recitation.duration = recitation.duration * 2
+                elif plan.times == maxTimes:
+                    recitation.duration = datetime.timedelta(days=1)
                 recitation.save()
 
             todayPlans = Plan.objects.filter(user=uid, date=datetime.date.today())
             targetNum = Subscription.objects.get(user=uid).targetNumber
             incNum = todayPlans.count() - targetNum
-            doneNum = todayPlans.filter(isChecked=True).count()
+            doneNum = todayPlans.filter(Q(isChecked=True) | Q(times=maxTimes)).count()
 
         except Exception as e:
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({'targetNum': targetNum, 'incNum':incNum, 'doneNum':doneNum}, status=status.HTTP_200_OK)
+        return Response({'targetNum': targetNum, 'incNum':incNum, 'doneNum': doneNum}, status=status.HTTP_200_OK)
+
+
+class target_num(APIView):
+    def get(self, request, format=None):
+        user = request.user
+        print(user)
+
+        try:
+            targetNum = Subscription.objects.get(user=user).targetNumber
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(targetNum, status=status.HTTP_200_OK)
+
+
+    def post(self, request, format=None):
+        user = request.user
+        print(user)
+        newTargetNum = request.data.get('targetNum', None)
+        if newTargetNum is None:
+            return Response({'error': 'Parameter error'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            subscription = Subscription.objects.get(user=user)
+            subscription.targetNumber = newTargetNum
+            subscription.save()
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'success': 'success'}, status=status.HTTP_200_OK)
+
+
+
+class subscription(APIView):
+    def get(self, request, format=None):
+        user = request.user
+        print(user)
+
+        try:
+            wordbook = Subscription.objects.get(user=user).wordbook
+            creatorName = wordbook.creator.nickname
+            wordNum = Word.objects.filter(wordbook=wordbook).count()
+            doneNum = Recitation.objects.filter(user=user, word__wordbook=wordbook).count()
+            wordbookDetail = {'id': wordbook.id, 'name': wordbook.name, 'introduction': wordbook.introduction,
+                            'cover': wordbook.cover.url, 'creatorName': creatorName, 'wordNum': wordNum,
+                              'doneNum': doneNum}
+
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(wordbookDetail, status=status.HTTP_200_OK)
+
+
+    def post(self, request, format=None):
+        user = request.user
+        print(user)
+        wordbookid = request.data.get('id', None)
+        if wordbookid is None:
+            return Response({'error': 'Parameter error'}, status=status.HTTP_400_BAD_REQUEST)
+        print(wordbookid)
+        try:
+            subscription = Subscription.objects.get(user=user)
+            subscription.wordbook = WordBook.objects.get(pk=wordbookid)
+            subscription.save()
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'success': 'success'}, status=status.HTTP_200_OK)
+
+
 
 
 

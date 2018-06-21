@@ -23,3 +23,4 @@ class Plan(models.Model):
     date = models.DateField(auto_now_add=True)
     word = models.ForeignKey('word.Word', on_delete=models.CASCADE)
     isChecked = models.BooleanField(default=False, blank=False)
+    times = models.IntegerField(default=0, blank=False)

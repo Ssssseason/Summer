@@ -7,6 +7,10 @@ import { connect } from 'react-redux';
 import NavBar from '../containers/navbar';
 import Login from '../views/login';
 import Recitation from '../views/recitation';
+import Setting from '../views/setting';
+import WordBookCategory from '../views/wordbookcategory';
+import Exam from '../views/exam';
+import Userdefined from '../views/userdefined';
 
 
 class Summer extends React.Component {
@@ -23,7 +27,7 @@ class Summer extends React.Component {
                         <Switch>
                             <Route path={'/login'} render={() => (<Login type='login' />)} />
                             <Route path={'/register_login'} render={() => (<Login type='register_login' />)} />
-                            <Redirect to={`/login`} />
+                            <Redirect to={'/login'} />
                         </Switch>
                         :
                         <Switch>
@@ -31,6 +35,11 @@ class Summer extends React.Component {
                             <Route path={'/register_login'} render={() => (<Login type='register_login' />)} />
                             <Route path={'/main'} component={Main} />
                             <Route path={'/recitation'} component={Recitation} />
+                            <Route path={'/exam'} component={Exam} />
+                            <Route path={'/userdefined'} component={Userdefined}/>
+                            <Route path={'/setting'} component={Setting}/>
+                            <Route path={'/wordbook/category'} component={WordBookCategory}/>
+                            <Redirect to={'/main'} />
                         </Switch>
                     }
                 </div>

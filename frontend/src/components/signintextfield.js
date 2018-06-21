@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Grid, TextField, Typography } from '@material-ui/core'
+import { Button, Grid, TextField, Typography, Dialog, DialogActions, DialogTitle, DialogContentText, DialogContent } from '@material-ui/core'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { login } from '../views/login/actions';
+import { setHasFinished } from '../views/login/actions';
 
 const styles = theme => ({
     item: {
@@ -18,7 +19,7 @@ const styles = theme => ({
     },
     container: {
         marginTop: 20,
-        marginBottom:20,
+        marginBottom: 20,
     }
 });
 
@@ -33,7 +34,7 @@ class SigninTextField extends Component {
 
     render() {
         const { username, email, password } = this.state;
-        const { classes, login } = this.props;
+        const { classes, login, hasFinished, setHasFinished } = this.props;
         return (
             <Grid container justify='center' className={classes.container}>
                 <TextField
@@ -41,7 +42,7 @@ class SigninTextField extends Component {
                     label="用户名"
                     margin="dense"
                     fullWidth
-                    className = {classes.item}
+                    className={classes.item}
                     onChange={(event) => {
                         event.preventDefault();
                         this.setState({
@@ -56,7 +57,7 @@ class SigninTextField extends Component {
                     autoComplete="current-password"
                     margin="dense"
                     fullWidth
-                    className = {classes.item}
+                    className={classes.item}
                     onChange={(event) => {
                         event.preventDefault();
                         this.setState({
@@ -65,7 +66,7 @@ class SigninTextField extends Component {
                     }}
                 />
                 <Button variant='raised' fullWidth size='large' color='primary'
-                    className = {classes.button}
+                    className={classes.button}
                     onClick={(event) => {
                         event.preventDefault();
                         login(username, password);
@@ -77,6 +78,31 @@ class SigninTextField extends Component {
                     color="inherit" align='center'>
                     还没有账户？去注册
                 </Typography>
+                <Dialog
+                    open={hasFinished}
+                    onClose={(event) => {
+                        event.preventDefault();
+                        setHasFinished(false);
+                    }}
+                    fullWidth
+                    aria-labelledby="login_alert-dialog-title"
+                    aria-describedby="login_alert-dialog-description"
+                >
+                    <DialogTitle id="login_alert-dialog-title">登录</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="login_alert-dialog-description">
+                            用户名或密码错误
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={(event) => {
+                            event.preventDefault();
+                            setHasFinished(false);
+                        }} color="primary">
+                            确定
+                         </Button>
+                    </DialogActions>
+                </Dialog>
             </Grid>
         );
 
@@ -84,13 +110,18 @@ class SigninTextField extends Component {
 }
 
 const mapStateToProps = (state) => ({
+    hasFinished: state.login.hasFinished,
+    error: state.login.error,
 
 });
 
 const mapDispatchToProps = (dispatch) => ({
     login: (username, password) => {
         dispatch(login(username, password));
-    }
+    },
+    setHasFinished: (hasFinished) => {
+        dispatch(setHasFinished(hasFinished));
+    },
 })
 
 SigninTextField.propTypes = {

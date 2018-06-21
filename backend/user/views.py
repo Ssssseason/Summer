@@ -10,12 +10,17 @@ from rest_framework.decorators import parser_classes
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import FileUploadParser,MultiPartParser,JSONParser
+import re
 
 def jwt_response_payload_handler(token, user=None, request=None):
     return {
         'auth': {'token': token},
         'avatar': user.avatar.url,
     }
+
+
+emailPattern = re.compile(r'^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$')
+
 
 class register(APIView):
     permission_classes = (AllowAny,)
@@ -27,6 +32,16 @@ class register(APIView):
         print(username, email, password)
         if None in (username, email, password):
             return Response({'error': 'Parameter errors'}, status=status.HTTP_400_BAD_REQUEST)
+
+        print(len(username), len(email), len(password))
+        if len(username) <= 6:
+            return Response({'error': 'Username must be longer than 6'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(password) <= 6:
+            return Response({'error': 'Password must be longer than 6'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if emailPattern.match(email) is None:
+            return Response({'error': 'Invalid email format'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             User.objects.create_user(username=username, email=email, password=password)

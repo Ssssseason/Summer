@@ -13,18 +13,27 @@ const styles = theme => ({
 class WordDetail extends Component {
     render() {
         const { showAll } = this.props;
-        const { content, pronunciation, definition } = this.props.word;
+        const { content, phonetic, definition, translation } = this.props.word;
         return (
             <div>
-                <Typography variant="title" align="center">
+                <Typography align="center" style={{ fontSize: 38 }}>
                     {content}
                 </Typography>
-                {pronunciation && Object.values(pronunciation).map((p) => {
-                    return (<Typography>{p.phoneme}{p.audio}</Typography>)
-                })}
-                {showAll && definition && Object.values(definition).map((d) => {
-                    return (<Typography>{d.type} {d.meaning}</Typography>)
-                })}
+                <Typography align="center" style={{ fontSize: 25, color: "#a0a0a0" }}>/{phonetic}/</Typography>
+                {showAll &&
+                    <div style={{paddingLeft: 30, paddingRight: 30}}>
+                        <Typography style={{ marginTop: 10, marginBottom: 10 }} variant="subheading" color="primary">英语释义</Typography>
+                        {definition && Object.values(definition).map((d, i) => {
+
+                            return (<Typography style={{ fontize: 15, marginTop: 10, marginBottom: 10, marginLeft: 10 }} key={d[0]}>{i + 1}. {d}</Typography>)
+                        })}
+                        <Typography style={{ marginTop: 10, marginBottom: 10 }} variant="subheading" color="primary">中文释义</Typography>
+                        {translation && Object.values(translation).map((t, i) => {
+
+                            return (<Typography style={{ fontSize: 15, marginTop: 10, marginBottom: 10, marginLeft: 10 }} key={t[0]}>{i + 1}. {t}</Typography>)
+                        })}
+                    </div>
+                }
             </div>
         )
     }

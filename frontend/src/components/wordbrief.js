@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Grid, TextField, Typography } from '@material-ui/core'
+import { Button, Grid, TextField, Typography, Divider } from '@material-ui/core'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
@@ -12,15 +12,26 @@ const styles = theme => ({
 
 class WordBrief extends Component {
     render() {
-        const { content, pronunciation, definition } = this.props.word;
+        const { content, phonetic, definition, translation } = this.props.word;
         return (
-            <div>
-                <Typography variant="title" align="center">
+            <div style={{marginTop: 10, marginBottom:20}}>
+                <Typography align="center" style={{ fontSize: 25, display: "inline-block" }}>
                     {content}
                 </Typography>
-                {definition && Object.values(definition).map((d) => {
-                    return (<Typography>{d.type} {d.meaning}</Typography>)
-                })}
+                <Typography align="center" style={{ color: "#a0a0a0", display: "inline-block", margin:10 }}>/{phonetic}/</Typography>
+                <div style={{paddingLeft: 30, paddingRight: 30}}>
+                    <Typography style={{ marginTop: 10, marginBottom: 10 }} variant="subheading" color="primary">英语释义</Typography>
+                    {definition && Object.values(definition).map((d, i) => {
+
+                        return (<Typography style={{ fontize: 15, marginTop: 10, marginBottom: 10, marginLeft: 10 }} key={d[0]}>{i + 1}. {d}</Typography>)
+                    })}
+                    <Typography style={{ marginTop: 10, marginBottom: 10 }} variant="subheading" color="primary">中文释义</Typography>
+                    {translation && Object.values(translation).map((t, i) => {
+
+                        return (<Typography style={{ fontSize: 15, marginTop: 10, marginBottom: 10, marginLeft: 10 }} key={t[0]}>{i + 1}. {t}</Typography>)
+                    })}
+                </div>
+                <Divider/>
             </div>
         )
     }

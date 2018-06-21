@@ -6,9 +6,6 @@ import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Redirect } from 'react-router-dom';
-import RecitingPlan from '../../containers/recitingplan';
-import RecitingWord from '../../containers/recitingword';
-import { getRecPlanNum } from './actions';
 
 
 const styles = theme => ({
@@ -25,37 +22,20 @@ const styles = theme => ({
         // minHeight: 150,
         // maxWidth: 400,
     },
-    // container: {
-    //     display: 'flex',
-    //     flexWrap: 'wrap',
-    // },
-    // paper: {
-    //     marginTop: 100,
-    //     padding: 40,
-    //     // maxWidth: 400,
-    // }
 });
 
-class Recitation extends Component {
+class Userdefined extends Component {
     componentWillMount() {
-        this.props.getRecPlanNum();
     }
 
     render() {
-        const { classes, isFetchingRecPlanNum, isReciting } = this.props;
+        const { classes, } = this.props;
 
         return (
             <Grid container className={classes.container} justify='center' direction='row'>
                 <Grid item xs={10} sm={10} md={8} lg={8}>
                     <Paper className={classes.paper}>
-                        {isFetchingRecPlanNum ?
-                            <CircularProgress />
-                            :
-                            isReciting ?
-                                <RecitingWord/>
-                                :
-                                <RecitingPlan />
-                        }
+
                     </Paper>
                 </Grid>
             </Grid>
@@ -63,20 +43,15 @@ class Recitation extends Component {
     }
 }
 
-Recitation.propTypes = {
+Userdefined.propTypes = {
     classes: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state) => ({
-    isFetchingRecPlanNum: state.recitation.isFetchingRecPlanNum,
-    isReciting: state.recitation.isReciting,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getRecPlanNum: ()=>{
-        dispatch(getRecPlanNum());
-    },
 })
 
 
-export default compose(connect(mapStateToProps, mapDispatchToProps), withStyles(styles))(Recitation);
+export default compose(connect(mapStateToProps, mapDispatchToProps), withStyles(styles))(Userdefined);

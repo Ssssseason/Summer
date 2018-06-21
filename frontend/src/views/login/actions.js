@@ -79,3 +79,11 @@ export const logout = () => {
         type: LOGOUT,
     });
 }
+
+export const SET_HASFINISHED = 'set_hasfinished';
+export const setHasFinished = (hasFinished)=>{
+    return ({
+        type: SET_HASFINISHED,
+        hasFinished: hasFinished,
+    });
+}
