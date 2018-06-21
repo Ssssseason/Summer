@@ -240,7 +240,11 @@ class subscription(APIView):
 
         return Response({'success': 'success'}, status=status.HTTP_200_OK)
 
+class exam(APIView):
+    def get(self, request, format=None):
 
+    def post(self, request, format=None):
+        
 
 
 
