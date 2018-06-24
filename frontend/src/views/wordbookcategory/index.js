@@ -49,7 +49,6 @@ class WordBookCategory extends Component {
             history, getWordBook, getTargetNum } = this.props;
         const { chosenId, currentPageNum } = this.state;
         const pageSize = 6;
-        // TODO: 由于book不是很多，所以可以一次性获取，存储起来，前端内部翻页
         if (wordbooks)
             console.log(currentPageNum, pageSize, wordbooks, wordbooks.slice((currentPageNum - 1) * pageSize, currentPageNum * pageSize));
         return (
@@ -71,8 +70,8 @@ class WordBookCategory extends Component {
                                                 <Grid container justify="center">
                                                     {isEditing &&
                                                         // <Grid container>
-                                                        <Grid item sm={1} xs={12}>
-                                                            <div style={{display: "flex", justifyContent:"center"}}>
+                                                        <Grid item sm={2} xs={12}>
+                                                            <div style={{display: "flex", justifyContent:"center" ,padding: 10}}>
                                                             <Radio checked={chosenId === wordbook.id}
                                                                 onChange={(event) => {
                                                                     event.preventDefault();

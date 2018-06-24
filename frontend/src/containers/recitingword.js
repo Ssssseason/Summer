@@ -91,6 +91,15 @@ class RecitingWord extends Component {
             )
         }
     }
+
+    componentWillUnmount(){
+        this.setState({
+            idx: 0,
+            showAll: false,
+            checkedRes: [],
+        });
+        this.props.setIsReciting(false);
+    }
 }
 
 RecitingWord.propTypes = {
@@ -105,6 +114,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     setCheckedRes: (checkedRes) => {
         dispatch(setCheckedRes(checkedRes));
+    },
+    setIsReciting: (isReciting) => {
+        dispatch(setIsReciting(isReciting));
     },
 })
 

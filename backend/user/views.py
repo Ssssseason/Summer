@@ -6,6 +6,8 @@ from rest_framework.views import APIView
 from user.models import User
 from rest_framework.response import Response
 from rest_framework import status
+from recitation.models import Subscription
+from word.models import WordBook
 from rest_framework.decorators import parser_classes
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -44,7 +46,9 @@ class register(APIView):
             return Response({'error': 'Invalid email format'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            User.objects.create_user(username=username, email=email, password=password)
+            user = User.objects.create_user(username=username, email=email, password=password)
+            Subscription.objects.create(user=user, wordbook=WordBook.objects.first())
+
         except Exception as e:
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

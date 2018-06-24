@@ -41,7 +41,7 @@ class RecitingPlan extends Component {
                         {doneNum}
                     </Typography>
                 </Grid>
-                {targetNum > doneNum ?
+                {targetNum + incNum> doneNum ?
                     <Grid item xs={12} md={4} className={classes.item}>
                         <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
                             今日单词任务</Typography>

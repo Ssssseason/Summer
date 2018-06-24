@@ -18,7 +18,7 @@ class WordBook(models.Model):
     type = models.CharField(max_length=4, choices=TYPE_CHOICES, blank=False)
     name = models.CharField(max_length=50, blank=False)
     introduction = models.CharField(max_length=500, default="", blank=True)
-    cover = models.ImageField(default='user/aa.jpg', upload_to='wordbook')
+    cover = models.ImageField(default='wordbook/default.jpg', upload_to='wordbook/')
     creator = models.ForeignKey("user.User", default=1, on_delete=models.CASCADE)
 
     class Meta:

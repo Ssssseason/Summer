@@ -19,7 +19,7 @@ class UserAvatar extends Component {
         const { anchorEl } = this.state;
         const { avatar, history, logout } = this.props;
         return (
-            <div>
+            <div style={{margin:5}}>
                 <Avatar style={{ color: '#00796B', backgroundColor: '#fff', cursor: 'pointer', }}
                     onClick={(event) => {
                         event.preventDefault();

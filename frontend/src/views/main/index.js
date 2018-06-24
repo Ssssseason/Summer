@@ -53,14 +53,14 @@ class Main extends Component {
                             }}>
                                 {/* <div> */}
                                 <Grid container>
-                                    <Grid item  xs={12} md={4} className={classes.item}>
+                                    <Grid item xs={12} md={4} className={classes.item}>
                                         <Typography variant="title" color="default" align='center' >
                                             今日计划单词数</Typography>
                                         <Typography color="primary" align='center' style={{ fontSize: 50 }}>
                                             {targetNum}{` + `}{incNum}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} md={4}className={classes.item}>
+                                    <Grid item xs={12} md={4} className={classes.item}>
                                         <Typography variant="title" color="default" align='center'>
                                             今日已完成数</Typography>
                                         <Typography color="primary" align='center' style={{ fontSize: 50 }}>
@@ -128,12 +128,6 @@ class Main extends Component {
                     </Grid>
                     <Grid container justify="space-between">
                         <Grid item xs={12} sm={5} md={4}>
-                            <Paper className={classes.paper} style={{ cursor: "pointer" }}>
-                                <Typography variant="subheading" style={{ display: "inline-flex", paddingTop: 15, paddingBottom: 15 }}>当前选择单词书</Typography>
-                                {currentWordBook && <WordBook wordbook={currentWordBook} />}
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={5} md={4}>
                             <Paper className={classes.paper} style={{ cursor: "pointer" }} onClick={(event) => {
                                 event.preventDefault();
                                 history.push('/setting');
@@ -142,26 +136,46 @@ class Main extends Component {
                                 {currentWordBook && <WordBook wordbook={currentWordBook} />}
                             </Paper>
                         </Grid>
+                        <Grid item xs={12} sm={5} md={4}>
+                            <Paper className={classes.paper} style={{ cursor: "pointer" }} onClick={(event) => {
+                                event.preventDefault();
+                                history.push('/wordbook/category');
+                            }}>
+                                {currentWordBook &&
+                                    <div>
+                                        <Typography variant="title" align='center' color='primary' style={{
+                                            fontSize: 30,
+                                            marginTop: 10,
+                                            marginBottom: 10,
+                                        }}>当前单词书进度</Typography>
+                                        <Typography variant="title" align='center' color='secondary' style={{
+                                            fontSize: 50,
+                                            marginTop: 10,
+                                            marginBottom: 10,
+                                        }}>{(currentWordBook.doneNum * 1.0 / currentWordBook.wordNum).toFixed(2)}%</Typography>
+                                        <Typography variant="title" align='center' color='secondary' style={{
+                                            fontSize: 50,
+                                        }}>
+                                            {currentWordBook.doneNum} / {currentWordBook.wordNum}
+                                        </Typography>
+                                    </div>
+                                }
+                            </Paper>
+                        </Grid>
                         <Grid item xs={12} md={2}>
-                            {/* <Grid item xs={12}> */}
                             <Paper className={classes.paper} style={{ cursor: "pointer" }} onClick={(event) => {
                                 event.preventDefault();
                                 history.push('/exam');
                             }}>
                                 <Typography style={{ fontSize: 25 }} align="center" color="primary">去考核</Typography>
                             </Paper>
-                            {/* </Grid> */}
-                            {/* <Grid item xs={12}> */}
                             <Paper className={classes.paper} style={{ cursor: "pointer" }} onClick={(event) => {
                                 event.preventDefault();
                                 history.push('/userdefined');
                             }}>
                                 <Typography style={{ fontSize: 25 }} align="center" color="primary">自定义单词</Typography>
-
                             </Paper>
-                            {/* </Grid> */}
                         </Grid>
-
                     </Grid>
                 </Grid>
             </Grid>

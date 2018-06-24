@@ -18,7 +18,8 @@ from rest_framework.parsers import FileUploadParser,MultiPartParser,JSONParser
 # 调整 batch number
 batchNum = 4
 maxTimes = 4
-examNum = 10
+# TODO:
+examNum = 4
 
 class rec_plan(APIView):
     def get(self, request, format=None):
@@ -84,8 +85,11 @@ class rec_word(APIView):
                     oldWordNum = oldWords.count()
                     if oldWordNum <targetNum:
                         wordBook = Subscription.objects.get(user=uid).wordbook
-                        recitedWord = Recitation.objects.filter(user=uid)
-                        newWord = Word.objects.filter(wordbook=wordBook).exclude(id__in=recitedWord)[:targetNum-oldWordNum]
+                        recitedWord = list(Recitation.objects.filter(user=uid))
+                        recitedWords = []
+                        for rw in recitedWord:
+                            recitedWords.append(rw.word_id)
+                        newWord = Word.objects.filter(wordbook=wordBook).exclude(id__in=recitedWords)[:targetNum-oldWordNum]
                         for w in newWord:
                             Recitation.objects.create(user=request.user, word=w)
                             Plan.objects.create(user=request.user, word=w)
