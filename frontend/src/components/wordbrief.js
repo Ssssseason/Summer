@@ -14,12 +14,15 @@ class WordBrief extends Component {
     render() {
         const { content, phonetic, definition, translation } = this.props.word;
         return (
-            <div style={{marginTop: 10, marginBottom:20}}>
-                <Typography align="center" style={{ fontSize: 25, display: "inline-block" }}>
-                    {content}
-                </Typography>
-                <Typography align="center" style={{ color: "#a0a0a0", display: "inline-block", margin:10 }}>/{phonetic}/</Typography>
-                <div style={{paddingLeft: 30, paddingRight: 30}}>
+            <Grid container style={{marginTop: 20, marginBottom: 20}}>
+                <Grid item xs={12}>
+                    <Typography style={{ fontSize: 25, display: "inline-block" }}>
+                        {content}
+                    </Typography>
+                    <Typography style={{ color: "#a0a0a0", display: "inline-block", margin: 10 }}>/{phonetic}/</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    {/* <div style={{ paddingLeft: 30, paddingRight: 30 }}> */}
                     <Typography style={{ marginTop: 10, marginBottom: 10 }} variant="subheading" color="primary">英语释义</Typography>
                     {definition && Object.values(definition).map((d, i) => {
 
@@ -30,9 +33,12 @@ class WordBrief extends Component {
 
                         return (<Typography style={{ fontSize: 15, marginTop: 10, marginBottom: 10, marginLeft: 10 }} key={t[0]}>{i + 1}. {t}</Typography>)
                     })}
-                </div>
-                <Divider/>
-            </div>
+                    {/* </div> */}
+                </Grid>
+                <Grid item xs={12}>
+                    <Divider />
+                </Grid>
+            </Grid>
         )
     }
 }

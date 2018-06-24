@@ -15,7 +15,7 @@ const styles = theme => ({
     },
     button: {
         marginTop: 30,
-        marginBottom: 39,
+        marginBottom: 30,
     },
     container: {
         marginTop: 20,

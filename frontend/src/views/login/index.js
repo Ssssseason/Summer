@@ -17,7 +17,8 @@ const styles = theme => ({
         // margin: 100,
     },
     paper: {
-        marginTop: 100,
+        marginTop: 50,
+        marginBottom: 30,
         padding: 40,
         maxWidth: 400,
     }

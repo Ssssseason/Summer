@@ -17,8 +17,8 @@ const styles = theme => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        paddingTop: 50,
-        paddingBottom: 50,
+        // paddingTop: 50,
+        // paddingBottom: 50,
     },
     paper: {
         marginTop: 30,
@@ -51,58 +51,89 @@ class Main extends Component {
                                 event.preventDefault();
                                 history.push('/recitation');
                             }}>
-                                <div>
-                                    <div style={{ verticalAlign: 'middle', display: 'flex', justifyContent: "space-between" }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
-                                            <div className={classes.item} >
-                                                <Typography variant="title" color="default" align='center' >
-                                                    今日计划单词数</Typography>
-                                                <Typography color="primary" align='center' style={{ fontSize: 50 }}>
-                                                    {targetNum}{` + `}{incNum}
-                                                </Typography>
-                                            </div>
+                                {/* <div> */}
+                                <Grid container>
+                                    <Grid item  xs={12} md={4} className={classes.item}>
+                                        <Typography variant="title" color="default" align='center' >
+                                            今日计划单词数</Typography>
+                                        <Typography color="primary" align='center' style={{ fontSize: 50 }}>
+                                            {targetNum}{` + `}{incNum}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} md={4}className={classes.item}>
+                                        <Typography variant="title" color="default" align='center'>
+                                            今日已完成数</Typography>
+                                        <Typography color="primary" align='center' style={{ fontSize: 50 }}>
+                                            {doneNum}
+                                        </Typography>
+                                    </Grid>
+                                    {targetNum > doneNum ?
+                                        <Grid item xs={12} md={4} className={classes.item}>
+                                            <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
+                                                今日单词任务</Typography>
+                                            <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
+                                                未完成</Typography>
+                                        </Grid>
+                                        :
+                                        <Grid item xs={12} md={4} className={classes.item}>
+                                            <Typography color="primary" align='center' style={{ fontSize: 30 }}>
+                                                今日单词任务 </Typography>
+                                            <Typography color="primary" align='center' style={{ fontSize: 30 }}>
+                                                已完成</Typography>
+                                        </Grid>
+                                    }
+                                    {/* <div style={{ verticalAlign: 'middle', display: 'flex', justifyContent: "space-between" }}> */}
+                                    {/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
+                                        <div className={classes.item} >
+                                            <Typography variant="title" color="default" align='center' >
+                                                今日计划单词数</Typography>
+                                            <Typography color="primary" align='center' style={{ fontSize: 50 }}>
+                                                {targetNum}{` + `}{incNum}
+                                            </Typography>
                                         </div>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
+                                        <div className={classes.item}>
+                                            <Typography variant="title" color="default" align='center'>
+                                                今日已完成数</Typography>
+                                            <Typography color="primary" align='center' style={{ fontSize: 50 }}>
+                                                {doneNum}
+                                            </Typography>
+                                        </div>
+                                    </div>
+                                    {targetNum > doneNum ?
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
                                             <div className={classes.item}>
-                                                <Typography variant="title" color="default" align='center'>
-                                                    今日已完成数</Typography>
-                                                <Typography color="primary" align='center' style={{ fontSize: 50 }}>
-                                                    {doneNum}
-                                                </Typography>
+                                                <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
+                                                    今日单词任务</Typography>
+                                                <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
+                                                    未完成</Typography>
                                             </div>
                                         </div>
-                                        {targetNum > doneNum ?
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
-                                                <div className={classes.item}>
-                                                    <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
-                                                        今日单词任务</Typography>
-                                                    <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
-                                                        未完成</Typography>
-                                                </div>
+                                        :
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
+                                            <div className={classes.item}>
+                                                <Typography color="primary" align='center' style={{ fontSize: 30 }}>
+                                                    今日单词任务 </Typography>
+                                                <Typography color="primary" align='center' style={{ fontSize: 30 }}>
+                                                    已完成</Typography>
                                             </div>
-                                            :
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
-                                                <div className={classes.item}>
-                                                    <Typography color="primary" align='center' style={{ fontSize: 30 }}>
-                                                        今日单词任务 </Typography>
-                                                    <Typography color="primary" align='center' style={{ fontSize: 30 }}>
-                                                        已完成</Typography>
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
+                                        </div>
+                                    } */}
+                                    {/* </div> */}
+                                    {/* </div> */}
+                                </Grid>
                             </Paper>
                         </Grid>
                     </Grid>
                     <Grid container justify="space-between">
-                        <Grid item xs={5} md={4}>
+                        <Grid item xs={12} sm={5} md={4}>
                             <Paper className={classes.paper} style={{ cursor: "pointer" }}>
                                 <Typography variant="subheading" style={{ display: "inline-flex", paddingTop: 15, paddingBottom: 15 }}>当前选择单词书</Typography>
                                 {currentWordBook && <WordBook wordbook={currentWordBook} />}
                             </Paper>
                         </Grid>
-                        <Grid item xs={6} md={4}>
+                        <Grid item xs={12} sm={5} md={4}>
                             <Paper className={classes.paper} style={{ cursor: "pointer" }} onClick={(event) => {
                                 event.preventDefault();
                                 history.push('/setting');

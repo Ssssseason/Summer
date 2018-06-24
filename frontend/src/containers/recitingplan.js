@@ -6,16 +6,16 @@ import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Redirect } from 'react-router-dom';
-import { setIsReciting,getRecWord } from '../views/recitation/actions';
+import { setIsReciting, getRecWord } from '../views/recitation/actions';
 
 
 const styles = theme => ({
     item: {
-        marginTop: 20,
-        marginBottom:20,
+        marginTop: 10,
+        marginBottom: 10,
     },
     button: {
-        marginTop: 20,
+        marginTop: 10,
     },
 });
 
@@ -24,9 +24,63 @@ class RecitingPlan extends Component {
     render() {
         const { classes, targetNum, doneNum, incNum, setIsReciting, getRecWord } = this.props;
         return (
-            <div>
-                <div style={{ verticalAlign: 'middle', display: 'flex', justifyContent: "space-between" }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
+            <Grid container justify="center" alignItems="center">
+                {/* <div> */}
+                {/* <div style={{ verticalAlign: 'middle', display: 'flex', justifyContent: "space-between" }}> */}
+                <Grid item xs={12} md={4} className={classes.item}>
+                    <Typography variant="title" color="default" align='center' >
+                        今日计划单词数</Typography>
+                    <Typography color="primary" align='center' style={{ fontSize: 50 }}>
+                        {targetNum}{` + `}{incNum}
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} md={4} className={classes.item}>
+                    <Typography variant="title" color="default" align='center'>
+                        今日已完成数</Typography>
+                    <Typography color="primary" align='center' style={{ fontSize: 50 }}>
+                        {doneNum}
+                    </Typography>
+                </Grid>
+                {targetNum > doneNum ?
+                    <Grid item xs={12} md={4} className={classes.item}>
+                        <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
+                            今日单词任务</Typography>
+                        <Typography color="secondary" align='center' style={{ fontSize: 30 }}>
+                            未完成</Typography>
+                        <div style={{ width: '100%', justifyContent: 'space-around', display: 'flex' }}>
+                            <Button variant="raised" color="primary" className={classes.button} size='large'
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    setIsReciting(true);
+                                    getRecWord('recite');
+                                }}
+                            >
+                                开始记忆
+                                </Button>
+
+                        </div>
+                    </Grid>
+                    :
+                    <Grid item xs={12} md={4} className={classes.item}>
+                        <Typography color="primary" align='center' style={{ fontSize: 30 }}>
+                            今日单词任务 </Typography>
+                        <Typography color="primary" align='center' style={{ fontSize: 30 }}>
+                            已完成</Typography>
+                        <div style={{ width: '100%', justifyContent: 'space-around', display: 'flex' }}>
+                            <Button variant="raised" color="primary" className={classes.button} size='large'
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    setIsReciting(true);
+                                    getRecWord('review');
+                                }}
+                            >
+                                继续复习
+                                </Button>
+
+                        </div>
+                    </Grid>
+                }
+                {/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-around", flex: 1 }}>
                         <div
                             className={classes.item}
                         >
@@ -101,8 +155,9 @@ class RecitingPlan extends Component {
                             </div>
                         </div>
                     }
-                </div>
-            </div>
+                </div> */}
+                {/* </div> */}
+            </Grid>
         )
     }
 }
@@ -121,7 +176,7 @@ const mapDispatchToProps = (dispatch) => ({
     setIsReciting: (isReciting) => {
         dispatch(setIsReciting(isReciting));
     },
-    getRecWord: (type)=>{
+    getRecWord: (type) => {
         dispatch(getRecWord(type));
     },
 })

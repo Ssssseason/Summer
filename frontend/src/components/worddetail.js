@@ -7,6 +7,9 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 const styles = theme => ({
+    container: {
+
+    }
 
 });
 
@@ -15,13 +18,19 @@ class WordDetail extends Component {
         const { showAll } = this.props;
         const { content, phonetic, definition, translation } = this.props.word;
         return (
-            <div>
-                <Typography align="center" style={{ fontSize: 38 }}>
-                    {content}
-                </Typography>
-                <Typography align="center" style={{ fontSize: 25, color: "#a0a0a0" }}>/{phonetic}/</Typography>
+            <Grid container justify="center" >
+                {/* <div> */}
+                <Grid item xs={12}>
+                    <Typography align="center" style={{ fontSize: 38 }}>
+                        {content}
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography align="center" style={{ fontSize: 25, color: "#a0a0a0" }}>/{phonetic}/</Typography>
+                </Grid>
                 {showAll &&
-                    <div style={{paddingLeft: 30, paddingRight: 30}}>
+                    <Grid item xs={12}>
+                        {/* <div style={{ paddingLeft: 30, paddingRight: 30 }}> */}
                         <Typography style={{ marginTop: 10, marginBottom: 10 }} variant="subheading" color="primary">英语释义</Typography>
                         {definition && Object.values(definition).map((d, i) => {
 
@@ -32,9 +41,11 @@ class WordDetail extends Component {
 
                             return (<Typography style={{ fontSize: 15, marginTop: 10, marginBottom: 10, marginLeft: 10 }} key={t[0]}>{i + 1}. {t}</Typography>)
                         })}
-                    </div>
+                        {/* </div> */}
+                    </Grid>
                 }
-            </div>
+                {/* </div> */}
+            </Grid>
         )
     }
 }

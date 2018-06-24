@@ -86,9 +86,12 @@ class userinfo(APIView):
             print(e)
             return Response({'error': 'Not exited user'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if nickname is not None: user.nickname = nickname
-        if signature is not None: user.signature = signature
-        if avatar is not None: user.avatar = avatar
+        if nickname is not None:
+            user.nickname = nickname
+        if signature is not None:
+            user.signature = signature
+        if avatar is not None:
+            user.avatar = avatar
         user.save()
         return Response({'response': 'success'}, status=status.HTTP_200_OK)
 

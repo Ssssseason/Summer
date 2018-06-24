@@ -12,8 +12,8 @@ const styles = theme => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        paddingTop: 50,
-        paddingBottom: 50,
+        // paddingTop: 50,
+        // paddingBottom: 50,
     },
     paper: {
         marginTop: 30,

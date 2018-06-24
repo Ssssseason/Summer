@@ -15,8 +15,8 @@ const styles = theme => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        paddingTop: 50,
-        paddingBottom: 50,
+        // paddingTop: 50,
+        // paddingBottom: 50,
     },
     paper: {
         marginTop: 30,
@@ -25,15 +25,6 @@ const styles = theme => ({
         // minHeight: 150,
         // maxWidth: 400,
     },
-    // container: {
-    //     display: 'flex',
-    //     flexWrap: 'wrap',
-    // },
-    // paper: {
-    //     marginTop: 100,
-    //     padding: 40,
-    //     // maxWidth: 400,
-    // }
 });
 
 class Recitation extends Component {
@@ -48,14 +39,18 @@ class Recitation extends Component {
             <Grid container className={classes.container} justify='center' direction='row'>
                 <Grid item xs={10} sm={10} md={8} lg={8}>
                     <Paper className={classes.paper}>
-                        {isFetchingRecPlanNum ?
-                            <CircularProgress />
-                            :
-                            isReciting ?
-                                <RecitingWord/>
+                        <Grid container justify="center">
+                            {isFetchingRecPlanNum ?
+                                <CircularProgress />
                                 :
-                                <RecitingPlan />
-                        }
+                                isReciting ?
+                                    <Grid item xs={12} lg={6}>
+                                        <RecitingWord />
+                                    </Grid>
+                                    :
+                                    <RecitingPlan />
+                            }
+                        </Grid>
                     </Paper>
                 </Grid>
             </Grid>
@@ -73,7 +68,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getRecPlanNum: ()=>{
+    getRecPlanNum: () => {
         dispatch(getRecPlanNum());
     },
 })

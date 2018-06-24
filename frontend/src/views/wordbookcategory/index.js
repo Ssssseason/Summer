@@ -16,8 +16,8 @@ const styles = theme => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        paddingTop: 50,
-        paddingBottom: 50,
+        // paddingTop: 50,
+        // paddingBottom: 50,
     },
     paper: {
         marginTop: 30,
@@ -50,8 +50,8 @@ class WordBookCategory extends Component {
         const { chosenId, currentPageNum } = this.state;
         const pageSize = 6;
         // TODO: 由于book不是很多，所以可以一次性获取，存储起来，前端内部翻页
-        if(wordbooks)
-        console.log(currentPageNum, pageSize,wordbooks, wordbooks.slice((currentPageNum-1) * pageSize, currentPageNum * pageSize));
+        if (wordbooks)
+            console.log(currentPageNum, pageSize, wordbooks, wordbooks.slice((currentPageNum - 1) * pageSize, currentPageNum * pageSize));
         return (
             <Grid container className={classes.container} justify='center' direction='row'>
                 <Grid item xs={10} sm={10} md={8} lg={8}>
@@ -65,34 +65,44 @@ class WordBookCategory extends Component {
                                     </Typography>
                                 </Grid>
                                 {
-                                    wordbooks && Object.values(wordbooks.slice((currentPageNum-1) * pageSize,currentPageNum*pageSize )).map((wordbook) => {
+                                    wordbooks && Object.values(wordbooks.slice((currentPageNum - 1) * pageSize, currentPageNum * pageSize)).map((wordbook) => {
                                         return (
-                                            <Grid item xs={6} style={{ padding: 20, display: "flex" }} key={wordbook.id}>
-                                                {isEditing &&
-                                                    <Radio checked={chosenId === wordbook.id} style={{ display: "inline-block", verticalAlign: "middle" }}
-                                                        onChange={(event) => {
-                                                            event.preventDefault();
-                                                            console.log(wordbook.id);
-                                                            this.setState({
-                                                                chosenId: wordbook.id,
-                                                            });
-                                                        }} />
-                                                }
-                                                <WordBook wordbook={wordbook} />
+                                            <Grid item md={6} xs={12} style={{ padding: 10 }} key={wordbook.id}>
+                                                <Grid container justify="center">
+                                                    {isEditing &&
+                                                        // <Grid container>
+                                                        <Grid item sm={1} xs={12}>
+                                                            <div style={{display: "flex", justifyContent:"center"}}>
+                                                            <Radio checked={chosenId === wordbook.id}
+                                                                onChange={(event) => {
+                                                                    event.preventDefault();
+                                                                    console.log(wordbook.id);
+                                                                    this.setState({
+                                                                        chosenId: wordbook.id,
+                                                                    });
+                                                                }} />
+                                                            </div>
+                                                        </Grid>
+                                                        // </Grid>
+                                                    }
+                                                    <Grid item sm={10} xs={12}>
+                                                        <WordBook wordbook={wordbook} />
+                                                    </Grid>
+                                                </Grid>
                                             </Grid>
                                         )
                                     })
                                 }
-                                { wordbooks &&
-                                <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-                                <PageNums pageNum={(wordbooks.length - 1) / pageSize + 1} currPage={currentPageNum} clickPage={(event) => {
-                                    this.setState({
-                                        currentPageNum: parseInt(event.target.innerText)
-                                    })
-                                }}>
-                                </PageNums>
-                                </div>
-                            }
+                                {wordbooks &&
+                                    <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+                                        <PageNums pageNum={(wordbooks.length - 1) / pageSize + 1} currPage={currentPageNum} clickPage={(event) => {
+                                            this.setState({
+                                                currentPageNum: parseInt(event.target.innerText)
+                                            })
+                                        }}>
+                                        </PageNums>
+                                    </div>
+                                }
                                 {isEditing &&
                                     <Grid item xs={12}>
                                         <div style={{ display: 'flex', justifyContent: "flex-end" }}>
@@ -117,6 +127,10 @@ class WordBookCategory extends Component {
                 </Grid>
             </Grid>
         )
+    }
+
+    componentWillUnmount() {
+        this.props.setSettingState(false);
     }
 }
 

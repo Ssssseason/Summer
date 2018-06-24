@@ -9,6 +9,7 @@ from rest_framework import status
 from django.db.models import F, Case, When, Value, ExpressionWrapper, Q
 from django.db.models import DateField, FloatField
 import datetime
+import random
 from rest_framework.decorators import parser_classes
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -17,6 +18,8 @@ from rest_framework.parsers import FileUploadParser,MultiPartParser,JSONParser
 # 调整 batch number
 batchNum = 4
 maxTimes = 4
+examNum = 10
+
 class rec_plan(APIView):
     def get(self, request, format=None):
         uid = request.user.id
@@ -57,12 +60,15 @@ class rec_word(APIView):
                     words = [p.word for p in todayLeftPlans]
 
                 else:
-                    targetNum = Subscription.objects.get(user=uid).targetNumber
+                    sub = Subscription.objects.get(user=uid)
+                    targetNum = sub.targetNumber
+                    wordbook = sub.wordbook
+
                     todayDoneWords = Plan.objects.filter(Q(user=uid), Q(date=datetime.date.today()), Q(isChecked=True) | Q(times=maxTimes)).values_list('word')
 
                     oldWords = Recitation.objects.annotate(priority=ExpressionWrapper(
                         F('successTimeCount') / (F('recitedTimeCount')+0.1), output_field=FloatField()
-                    )).filter(user=uid)
+                    )).filter(user=uid, word__wordbook= wordbook)
 
                     oldWords1 = oldWords.filter(successTimeCount__lt=F('recitedTimeCount') * 0.7)
                     oldWords2 = oldWords.filter(successTimeCount__gte=F('recitedTimeCount') * 0.7, lastRecitedTime__lt=datetime.date.today()-F('duration'))
@@ -93,12 +99,14 @@ class rec_word(APIView):
 
         elif type == 'review':
             try:
-                targetNum = Subscription.objects.get(user=uid).targetNumber
+                sub = Subscription.objects.get(user=uid)
+                targetNum = sub.targetNumber
+                wordbook = sub.wordbook
                 # todayDoneWords = Plan.objects.filter(Q(user=uid), Q(date=datetime.date.today()), Q(isChecked=True) | Q(times=maxTimes)).values_list('word')
 
                 oldWords = Recitation.objects.annotate(priority=ExpressionWrapper(
                     F('successTimeCount') / (F('recitedTimeCount')+0.1), output_field=FloatField()
-                )).filter(user=uid).order_by('-priority')[:targetNum]
+                )).filter(user=uid, word__wordbook=wordbook).order_by('-priority')[:targetNum]
 
                 for oldWord in oldWords:
                     Plan.objects.create(user=request.user, word=oldWord.word)
@@ -118,7 +126,7 @@ class rec_word(APIView):
                 wordDetail['id'] = w.id
                 wordDetail['content'] = w.content
                 wordDetail['phonetic'] = w.phonetic
-                wordDetail['definition'] = w.definitation.split('\n')
+                wordDetail['definition'] = w.definition.split('\n')
                 wordDetail['translation'] = w.translation.split('\n')
                 wordDetails.append(wordDetail)
         except Exception as e:
@@ -242,9 +250,70 @@ class subscription(APIView):
 
 class exam(APIView):
     def get(self, request, format=None):
+        user = request.user
+        print(user)
+        try:
+            wordbook = Subscription.objects.get(user=user).wordbook
+
+            examWords = Recitation.objects.annotate(priority=ExpressionWrapper(
+                F('successTimeCount') / (F('recitedTimeCount')+0.1), output_field=FloatField()
+            )).filter(user=user, word__wordbook=wordbook).order_by('-priority')[:examNum]
+
+            wordDetails = []
+            allWordNum = Word.objects.count()
+
+            for examWord in list(examWords):
+                w = examWord.word
+                wordDetail = {}
+                wordDetail['id'] = w.id
+                wordDetail['content'] = w.content
+                wordDetail['phonetic'] = w.phonetic
+                wordDetail['options'] = []
+                for i in range(4):
+                    randomIdx = int(random.random() * allWordNum)
+                    translation = Word.objects.all()[randomIdx].translation.split('\n')
+                    randomIdx = int(random.random() * len(translation))
+                    translation = translation[randomIdx]
+                    wordDetail['options'].append(translation)
+
+                translation = w.translation.split('\n')
+                randomIdx = int(random.random() * len(translation))
+                translation = translation[randomIdx]
+
+                randomIdx = int(random.random() * 4)
+                wordDetail['options'][randomIdx] = translation
+                wordDetail['answer'] = randomIdx
+
+                wordDetails.append(wordDetail)
+
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(wordDetails, status=status.HTTP_200_OK)
+
 
     def post(self, request, format=None):
-        
+        user = request.user
+        examRes = request.data.get('examRes', None)
+
+        if examRes is None:
+            return Response({'error': "Parameter error"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            for res in examRes:
+                rec = Recitation.objects.get(user=user, word=res['id'])
+                rec.recitedTimeCount += 1
+                rec.successTimeCount += int(res['res'])
+                rec.save()
+
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'success': 'success'}, status=status.HTTP_200_OK)
+
+
 
 
 

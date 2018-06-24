@@ -9,12 +9,12 @@ import { register, setHasFinished } from '../views/login/actions';
 
 const styles = theme => ({
     item: {
-        marginTop: 15,
-        marginBottom: 15,
+        marginTop: 5,
+        marginBottom: 5,
     },
     button: {
         marginTop: 30,
-        marginBottom: 39,
+        marginBottom: 30,
     },
     container: {
         marginTop: 20,
@@ -33,13 +33,14 @@ class SignupTextField extends Component {
             username: "",
             email: "",
             password: "",
+            password2: "",
             isDialogOpen: false,
             dialogContent: undefined,
         };
     }
 
     render() {
-        const { username, email, password, isDialogOpen, dialogContent } = this.state;
+        const { username, email, password,password2, isDialogOpen, dialogContent } = this.state;
         const { classes, register, hasFinished, registerMsg, setHasFinished, error } = this.props;
         return (
             <Grid container justify='center' className={classes.container}>
@@ -85,6 +86,21 @@ class SignupTextField extends Component {
                         })
                     }}
                 />
+                <TextField
+                    id="password2"
+                    label="确认密码"
+                    type="password"
+                    autoComplete="current-password"
+                    margin="dense"
+                    fullWidth
+                    className={classes.item}
+                    onChange={(event) => {
+                        event.preventDefault();
+                        this.setState({
+                            password2: event.target.value,
+                        })
+                    }}
+                />
                 <Button variant='raised' fullWidth size='large' color='primary'
                     className={classes.button}
                     onClick={(event) => {
@@ -111,6 +127,12 @@ class SignupTextField extends Component {
                             this.setState({
                                 isDialogOpen: true,
                                 dialogContent: "密码长度必须小于50字节",
+                            })
+                        }
+                        else if(password != password2){
+                            this.setState({
+                                isDialogOpen: true,
+                                dialogContent: "两次密码不一致",
                             })
                         }
                         else if (!(emailRegex.test(email))) {

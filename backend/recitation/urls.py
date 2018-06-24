@@ -6,4 +6,5 @@ urlpatterns = [
     path('rec_plan', views.rec_plan.as_view(), name='rec_plan'),
     path('target_num', views.target_num.as_view(), name='target_num'),
     path('subscription', views.subscription.as_view(), name='subscription'),
+    path('exam', views.exam.as_view(), name='exam'),
 ]

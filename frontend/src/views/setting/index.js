@@ -24,15 +24,6 @@ const styles = theme => ({
         // minHeight: 150,
         // maxWidth: 400,
     },
-    // container: {
-    //     display: 'flex',
-    //     flexWrap: 'wrap',
-    // },
-    // paper: {
-    //     marginTop: 100,
-    //     padding: 40,
-    //     // maxWidth: 400,
-    // },
     button: {
         margin: 10,
     },
@@ -63,59 +54,68 @@ class Setting extends Component {
                 <Grid item xs={10} sm={10} md={8} lg={8}>
                     <Paper className={classes.paper}>
                         {(isFetchingTargetNum || isFetchingWordBook) ? <CircularProgress /> :
-                            <div style={{ padding: 20 }}>
-                                <Grid container style={{ display: 'flex', justifyContent: "space-between", }}>
-                                    <Grid item md={7} xs={10} style={{ display: "inline-flex", verticalAlign: "middle" }}>
-                                        <Typography variant="subheading" style={{ display: "inline-flex", paddingTop: 15, paddingBottom: 15 }}>
-                                            每日学习量：
-                                        </Typography>
-                                        <TextField disabled={!isEditing} defaultValue={currentTargetNum}
-                                            style={{ padding: 10 }}
-                                            value={newTargetNum} onChange={(event) => {
-                                                event.preventDefault();
-                                                this.setState({
-                                                    newTargetNum: event.target.value,
-                                                })
-                                            }} />
-                                    </Grid>
-                                    <Grid item md={5} xs={12} style={{ display: 'inline-flex', justifyContent: "flex-end" }}>
-                                        {!isEditing ?
-                                            <Button variant="raised" className={classes.button} color="primary" onClick={(event) => {
-                                                this.setState({ isEditing: true, newTargetNum: currentTargetNum });
-                                            }}>修改</Button>
-                                            :
-                                            <div>
+                            <Grid container justify="center">
+                                <Grid item xs={12}>
+                                    <Grid container style={{ display: 'flex', justifyContent: "space-between", }}>
+                                        <Grid item xs={12} sm={7}>
+                                            <Grid container>
+                                                <Grid item lg={3} md={4} xs={6} style={{ display: "inline-flex", verticalAlign: "middle" }}>
+                                                    <Typography variant="subheading" style={{ display: "inline-flex", paddingTop: 15, paddingBottom: 15 }}>
+                                                        每日学习量：
+                                                </Typography>
+                                                </Grid>
+                                                <Grid item md={4} xs={6} style={{ display: "inline-flex", verticalAlign: "middle" }}>
+                                                    <TextField disabled={!isEditing} defaultValue={currentTargetNum}
+                                                        style={{ padding: 10 }}
+                                                        value={newTargetNum} onChange={(event) => {
+                                                            event.preventDefault();
+                                                            this.setState({
+                                                                newTargetNum: event.target.value,
+                                                            })
+                                                        }} />
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item sm={4} xs={12} style={{ display: 'inline-flex', justifyContent: "flex-end" }}>
+                                            {!isEditing ?
                                                 <Button variant="raised" className={classes.button} color="primary" onClick={(event) => {
-                                                    this.setState({ isEditing: false });
-                                                    this.props.setTargetNum(newTargetNum);
-                                                }}>确定</Button>
-                                                <Button variant="raised" className={classes.button} color="secondary" onClick={(event) => {
-                                                    this.setState({ isEditing: false, newTargetNum: currentTargetNum })
-                                                }}>取消</Button>
-                                            </div>
-                                        }
+                                                    this.setState({ isEditing: true, newTargetNum: currentTargetNum });
+                                                }}>修改</Button>
+                                                :
+                                                <div>
+                                                    <Button variant="raised" className={classes.button} color="primary" onClick={(event) => {
+                                                        this.setState({ isEditing: false });
+                                                        this.props.setTargetNum(newTargetNum);
+                                                    }}>确定</Button>
+                                                    <Button variant="raised" className={classes.button} color="secondary" onClick={(event) => {
+                                                        this.setState({ isEditing: false, newTargetNum: currentTargetNum })
+                                                    }}>取消</Button>
+                                                </div>
+                                            }
+                                        </Grid>
                                     </Grid>
                                 </Grid>
-                                <Grid container style={{ display: 'flex', justifyContent: "space-between", }}>
-                                    <Grid item md={7} xs={10} style={{ display: "inline-flex", verticalAlign: "middle" }}>
+                                <Grid container justify="space-between">
+                                    <Grid item md={4} xs={6} style={{ display: "inline-flex", verticalAlign: "middle" }}>
                                         <Typography variant="subheading" style={{ display: "inline-flex", paddingTop: 15, paddingBottom: 15 }}>当前选择单词书</Typography>
                                     </Grid>
-                                    <Grid item md={5} xs={12} style={{ display: 'inline-flex', justifyContent: "flex-end" }}>
-                                    <div>
-                                        <Button variant="raised" className={classes.button} color="primary" onClick={(event) => {
-                                            event.preventDefault();
-                                            setSettingState(true);
-                                            history.push('/wordbook/category');
-                                        }}>修改
+                                    <Grid item md={4} xs={6} style={{ display: 'inline-flex', justifyContent: "flex-end" }}>
+                                        <div>
+                                            <Button variant="raised" className={classes.button} color="primary" onClick={(event) => {
+                                                event.preventDefault();
+                                                setSettingState(true);
+                                                history.push('/wordbook/category');
+                                            }}>修改
                                         </Button>
                                         </div>
                                     </Grid>
                                     {currentWordBook && <WordBook wordbook={currentWordBook} />}
                                 </Grid>
-                            </div>}
+                            </Grid>
+                        }
                     </Paper>
                 </Grid>
-            </Grid>
+            </Grid >
         )
     }
 }

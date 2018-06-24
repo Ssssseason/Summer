@@ -13,22 +13,26 @@ class WordBook(models.Model):
         ('ielts', '雅思'),
         ('toefl', '托福'),
         ('gre', 'GRE'),
+        ('ud', 'User Defined'),
     )
-    type = models.CharField(max_length=4, choices=TYPE_CHOICES, unique=True, blank=False)
-    name = models.CharField(max_length=50, unique=True, blank=False)
-    introduction = models.CharField(max_length=500, blank=True)
+    type = models.CharField(max_length=4, choices=TYPE_CHOICES, blank=False)
+    name = models.CharField(max_length=50, blank=False)
+    introduction = models.CharField(max_length=500, default="", blank=True)
     cover = models.ImageField(default='user/aa.jpg', upload_to='wordbook')
     creator = models.ForeignKey("user.User", default=1, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (('type', 'creator'),)
 
 class Word(models.Model):
     # wordbook = models.ForeignKey('WordBook', on_delete=models.CASCADE)
     wordbook = models.ManyToManyField('WordBook')
-    content = models.CharField(max_length=50, unique=True, blank=False)
+    content = models.CharField(max_length=50, blank=False)
     phonetic = models.CharField(max_length=50, null=True)
-    definitation = models.TextField(null=True)
+    definition = models.TextField(null=True)
     translation = models.TextField(null=True)
     # FIXME: 暂时作数据库迁移用
-    tag = models.CharField(max_length=50)
+    tag = models.CharField(max_length=50, default='ud')
 
 
 
