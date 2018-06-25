@@ -74,3 +74,12 @@ export const setShowQueRes = (showQueRes) => {
         showExamRes: showQueRes,
     });
 }
+
+
+export const SET_EXAM_FINISHED = "set_exam_finished";
+export const setExamHasFinished = (hasFinished)=>{
+    return ({
+        type: SET_EXAM_FINISHED,
+        hasFinished: hasFinished,
+    });
+}

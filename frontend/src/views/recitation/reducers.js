@@ -1,5 +1,6 @@
 import { SET_ISRECITING, CHECK_REQ, CHECK_SUCCESS, CHECK_FAILURE, RECWORD_SUCCESS, RECWORD_FALIURE, RECPLANNUM_REQ, RECPLANNUM_SUCCESS, RECPLANNUM_FAILURE, RECWORD_REQ } from "./actions";
 import { LOGOUT } from "../login/actions";
+import { SET_REC_FINISHED } from "../main/actions";
 
 const initialState = {
     targetNum: undefined,
@@ -10,6 +11,8 @@ const initialState = {
     isReciting: false,
     isFetchingWords: false,
     isChecking: false,
+    hasFinished: false,
+    dialogContent: undefined,
 }
 
 
@@ -38,6 +41,8 @@ export const recitationReducer = (state = initialState, action) => {
                 incNum: undefined,
                 doneNum: undefined,
                 error: action.error,
+                hasFinished: true,
+                dialogContent: "发送背诵结果失败",
             }));
         case RECWORD_REQ:
             return (Object.assign({}, state, {
@@ -53,6 +58,8 @@ export const recitationReducer = (state = initialState, action) => {
                 isFetchingWords: false,
                 words: undefined,
                 error: action.error,
+                hasFinished: true,
+                dialogContent: "获取单词列表失败",
             }));
         case RECPLANNUM_REQ:
             return (Object.assign({}, state, {
@@ -72,7 +79,13 @@ export const recitationReducer = (state = initialState, action) => {
                 incNum: undefined,
                 doneNum: undefined,
                 error: action.error,
+                hasFinished: true,
+                dialogContent: "获取今日进度失败",
             }))
+        case SET_REC_FINISHED:
+            return (Object.assign({}, state, {
+                hasFinished: action.hasFinished,
+            }));
         case LOGOUT:
             return initialState;
         default:

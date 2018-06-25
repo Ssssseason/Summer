@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, Grid, Paper, Button, CircularProgress } from '@material-ui/core'
+import { Typography, Grid, Paper, Button, CircularProgress, Dialog, DialogActions, DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, NavLink } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Redirect } from 'react-router-dom';
 import { getWordBook } from '../setting/action';
-import { setExamState, getExam, postExam } from './actions';
+import { setExamState, getExam, postExam, setExamHasFinished } from './actions';
 
 
 const styles = theme => ({
@@ -42,7 +42,8 @@ class Exam extends Component {
     }
 
     render() {
-        const { classes, questions, postExam, isExaming, getExam, currentWordBook, isFetchingWordBook, setExamState } = this.props;
+        const { classes, setExamHasFinished, hasFinished, dialogContent, questions, postExam,
+            isExaming, getExam, currentWordBook, isFetchingWordBook, setExamState } = this.props;
         const { idx, lastOptionIdx, showQueRes, examRes } = this.state;
         // const { answer, content, id, options, phonetic } = questions[idx];
 
@@ -83,8 +84,8 @@ class Exam extends Component {
                                         <Grid item xs={12}>
                                             <Typography variant="title" align='center' color='primary' style={{
                                                 fontSize: 30,
-                                            marginTop: 10,
-                                            marginBottom: 10,
+                                                marginTop: 10,
+                                                marginBottom: 10,
                                             }}>考核结果</Typography>
                                         </Grid>
                                         <Grid item xs={12}>
@@ -97,11 +98,13 @@ class Exam extends Component {
                                                 return cnt;
                                             }, 0)} / {questions.length}</Typography>
                                         </Grid>
-                                        <Grid item xs={12} style={{display: "flex", justifyContent:"center"}}>
-                                            <Button variant="raised" style={{marginTop: 30}} color="prim" onClick={(event) => {
+                                        <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
+                                            <Button variant="raised" style={{ marginTop: 30 }} color="primary" onClick={(event) => {
                                                 event.preventDefault();
                                                 setExamState(false);
-                                                postExam(examRes);
+                                                if (examRes.length != 0) {
+                                                    postExam(examRes);
+                                                }
                                                 this.setState({
                                                     idx: 0,
                                                     showQueRes: false,
@@ -139,7 +142,7 @@ class Exam extends Component {
                                                                     onClick={(event) => {
                                                                         event.preventDefault();
                                                                         var res = examRes;
-                                                                        res.push({"id":questions[idx].id,"res": questions[idx].answer === i});
+                                                                        res.push({ "id": questions[idx].id, "res": questions[idx].answer === i });
                                                                         this.setState({ showQueRes: true, examRes: res, lastOptionIdx: i });
                                                                     }} >{option}</Button>
                                                             </Grid>
@@ -165,6 +168,25 @@ class Exam extends Component {
                                 <CircularProgress />
                         }
                     </Paper>
+                    <Dialog fullWidth
+                        open={hasFinished}
+                        onClose={(event) => {
+                            event.preventDefault();
+                            setExamHasFinished(false);
+                        }}
+                        aria-labelledby="add_form-dialog-title">
+                        <DialogTitle id="add_form-dialog-title">考核</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>{dialogContent}</DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={(event) => {
+                                event.preventDefault();
+                                setExamHasFinished(false);
+                            }} color="primary">
+                                确定</Button>
+                        </DialogActions>
+                    </Dialog>
                 </Grid>
             </Grid>
         )
@@ -187,6 +209,8 @@ const mapStateToProps = (state) => ({
     currentWordBook: state.setting.currentWordBook,
     isFetchingWordBook: state.setting.isFetchingWordBook,
     questions: state.exam.questions,
+    hasFinished: state.exam.hasFinished,
+    dialogContent: state.exam.dialogContent,
     // showQueRes: state.exam.showQueRes,
 });
 
@@ -202,6 +226,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     postExam: (examRes) => {
         dispatch(postExam(examRes));
+    },
+    setExamHasFinished: (hasFinished) => {
+        dispatch(setExamHasFinished(hasFinished));
     },
 })
 

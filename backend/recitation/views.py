@@ -20,6 +20,7 @@ batchNum = 4
 maxTimes = 4
 # TODO:
 examNum = 4
+ratio = 0.8
 
 class rec_plan(APIView):
     def get(self, request, format=None):
@@ -77,7 +78,7 @@ class rec_word(APIView):
                     print(oldWords2.values('word_id', 'word__content'))
                     # TODO: 调整优先级
 
-                    oldWords = oldWords1.union(oldWords2).exclude(word__in=set(todayDoneWords)).order_by('-priority')[:targetNum]
+                    oldWords = oldWords1.union(oldWords2).exclude(word__in=set(todayDoneWords)).order_by('-priority')[:int(targetNum*0.8)]
                     print(oldWords.values())
                     for oldWord in oldWords:
                         Plan.objects.create(user=request.user, word=oldWord.word)
@@ -106,17 +107,22 @@ class rec_word(APIView):
                 sub = Subscription.objects.get(user=uid)
                 targetNum = sub.targetNumber
                 wordbook = sub.wordbook
-                # todayDoneWords = Plan.objects.filter(Q(user=uid), Q(date=datetime.date.today()), Q(isChecked=True) | Q(times=maxTimes)).values_list('word')
 
-                oldWords = Recitation.objects.annotate(priority=ExpressionWrapper(
-                    F('successTimeCount') / (F('recitedTimeCount')+0.1), output_field=FloatField()
-                )).filter(user=uid, word__wordbook=wordbook).order_by('-priority')[:targetNum]
+                todayLeftPlans = Plan.objects.select_related('word').filter(user=uid, date=datetime.date.today(), isChecked=False, times__lt=maxTimes)[:batchNum]
+                print(todayLeftPlans.values_list())
+                if(todayLeftPlans.count()>0):
+                    words = [p.word for p in todayLeftPlans]
 
-                for oldWord in oldWords:
-                    Plan.objects.create(user=request.user, word=oldWord.word)
+                else:
+                    oldWords = Recitation.objects.annotate(priority=ExpressionWrapper(
+                        F('successTimeCount') / (F('recitedTimeCount')+0.1), output_field=FloatField()
+                    )).filter(user=uid, word__wordbook=wordbook).order_by('-priority')[:targetNum]
 
-                todayLeftPlans = Plan.objects.filter(user=uid, date=datetime.date.today(), isChecked=False, times__lt=maxTimes)[:batchNum]
-                words = [p.word for p in todayLeftPlans]
+                    for oldWord in oldWords:
+                        Plan.objects.create(user=request.user, word=oldWord.word)
+
+                    todayLeftPlans = Plan.objects.filter(user=uid, date=datetime.date.today(), isChecked=False, times__lt=maxTimes)[:batchNum]
+                    words = [p.word for p in todayLeftPlans]
 
 
             except Exception as e:

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, Grid, Paper, CircularProgress } from '@material-ui/core'
+import { Typography, Grid, Paper, CircularProgress, Dialog, DialogActions, DialogTitle, DialogContent, DialogContentText, Button } from '@material-ui/core'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, NavLink } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { compose } from 'redux';
 import { Redirect } from 'react-router-dom';
 import RecitingPlan from '../../containers/recitingplan';
 import RecitingWord from '../../containers/recitingword';
-import { getRecPlanNum } from './actions';
+import { getRecPlanNum, setRecHasFinished } from './actions';
 
 
 const styles = theme => ({
@@ -33,7 +33,7 @@ class Recitation extends Component {
     }
 
     render() {
-        const { classes, isFetchingRecPlanNum, isReciting } = this.props;
+        const { classes, setRecHasFinished, hasFinished, dialogContent, isFetchingRecPlanNum, isReciting } = this.props;
 
         return (
             <Grid container className={classes.container} justify='center' direction='row'>
@@ -52,6 +52,25 @@ class Recitation extends Component {
                             }
                         </Grid>
                     </Paper>
+                    <Dialog fullWidth
+                        open={hasFinished}
+                        onClose={(event) => {
+                            event.preventDefault();
+                            setRecHasFinished(false);
+                        }}
+                        aria-labelledby="add_form-dialog-title">
+                        <DialogTitle id="add_form-dialog-title">背诵</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>{dialogContent}</DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={(event) => {
+                                event.preventDefault();
+                                setRecHasFinished(false);
+                            }} color="primary">
+                                确定</Button>
+                        </DialogActions>
+                    </Dialog>
                 </Grid>
             </Grid>
         )
@@ -65,11 +84,16 @@ Recitation.propTypes = {
 const mapStateToProps = (state) => ({
     isFetchingRecPlanNum: state.recitation.isFetchingRecPlanNum,
     isReciting: state.recitation.isReciting,
+    hasFinished: state.recitation.hasFinished,
+    dialogContent: state.recitation.dialogContent,
 });
 
 const mapDispatchToProps = (dispatch) => ({
     getRecPlanNum: () => {
         dispatch(getRecPlanNum());
+    },
+    setRecHasFinished: (hasFinished) => {
+        dispatch(setRecHasFinished(hasFinished));
     },
 })
 

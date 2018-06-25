@@ -141,30 +141,33 @@ class userdefined(APIView):
     def delete(self, request, format=None):
         user = request.user
         print(user)
-        # wordid = request.data.get('id', None)
-        wordids = request.data.get('ids', None)
-        print(wordids)
-        if wordids is None:
+        wordid = request.data.get('id', None)
+        wordid = request.GET.get('id', None)
+        # wordids = request.data.get('ids', None)
+        # print(wordids)
+        if wordid is None:
             return Response({'error': 'Parameter error'}, status=status.HTTP_404_NOT_FOUND)
 
         if user.is_superuser or user.is_staff or user.is_admin:
             return Response({'error': "Not for admin"}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            for wordid in wordids:
+        # try:
+        #     for wordid in wordids:
                 # wordbook = wordModels.WordBook.objects.get(creator=user)
                 # if wordbook.creator != user:
                 #     return Response({'error': 'no permission to the word'}, status=status.HTTP_404_NOT_FOUND)
-                try:
-                    word = wordModels.Word.objects.get(pk=wordid, wordbook__creator=user)
-                except wordModels.Word.DoesNotExist:
-                    word = None
-                if word is not None:
-                    word.delete()
+        try:
+            word = wordModels.Word.objects.get(pk=wordid, wordbook__creator=user)
+            print("xx")
+        except wordModels.Word.DoesNotExist:
+            print("ex")
+            word = None
+        if word is not None:
+            word.delete()
 
-        except Exception as e:
-            print(e)
-            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        # except Exception as e:
+        #     print(e)
+        #     return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({'success': 'success'}, status=status.HTTP_200_OK)
 

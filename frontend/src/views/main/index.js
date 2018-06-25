@@ -127,7 +127,7 @@ class Main extends Component {
                         </Grid>
                     </Grid>
                     <Grid container justify="space-between">
-                        <Grid item xs={12} sm={5} md={4}>
+                        <Grid item xs={12} sm={5} lg={4}>
                             <Paper className={classes.paper} style={{ cursor: "pointer" }} onClick={(event) => {
                                 event.preventDefault();
                                 history.push('/setting');
@@ -136,7 +136,7 @@ class Main extends Component {
                                 {currentWordBook && <WordBook wordbook={currentWordBook} />}
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={5} md={4}>
+                        <Grid item xs={12} sm={5} lg={4}>
                             <Paper className={classes.paper} style={{ cursor: "pointer" }} onClick={(event) => {
                                 event.preventDefault();
                                 history.push('/wordbook/category');
@@ -162,7 +162,7 @@ class Main extends Component {
                                 }
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} md={2}>
+                        <Grid item xs={12} lg={2}>
                             <Paper className={classes.paper} style={{ cursor: "pointer" }} onClick={(event) => {
                                 event.preventDefault();
                                 history.push('/exam');
