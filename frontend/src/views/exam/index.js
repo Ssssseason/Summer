@@ -116,6 +116,11 @@ class Exam extends Component {
                                     </Grid>
                                     :
                                     <Grid container justify="center" alignItems="center">
+                                        <Grid item xs={12}>
+                                            <Typography align="center">
+                                                进度：{idx + 1} / {questions.length}
+                                            </Typography>
+                                        </Grid>
                                         <Grid item xs={12} md={6}>
                                             <Typography style={{ fontSize: 38, }} align="center">
                                                 {questions[idx].content}

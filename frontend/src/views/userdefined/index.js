@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, Grid, Paper, CircularProgress, Table, TableBody, TableCell, TableRow, TableHead, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core'
+import { Typography, Grid, Paper, CircularProgress, Table, TableBody, TableCell, TableRow, TableHead, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TableFooter, TablePagination } from '@material-ui/core'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, NavLink } from 'react-router-dom';
@@ -47,18 +47,29 @@ class Userdefined extends Component {
             isEditOpen: false,
             isDelOpen: false,
             currentWord: initWord,
+            page: 0,
+            rowsPerPage: 5,
         };
+        this.handleChangePage = this.handleChangePage.bind(this);
+        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     }
 
     componentWillMount() {
         this.props.getUserDefined();
     }
+    handleChangePage = (event, page) => {
+        this.setState({ page });
+    };
+
+    handleChangeRowsPerPage = event => {
+        this.setState({ rowsPerPage: event.target.value });
+    };
 
     render() {
         const { classes, isFetching, words, getUserDefined, postUserDefined, putUserDefined,
             delUserDefined, hasFinished, dialogContent, isEditing, setUDFinished,
             setUDIsEditing } = this.props;
-        const { isAddOpen, isEditOpen, isDelOpen, currentWord } = this.state;
+        const { isAddOpen, page, rowsPerPage, isEditOpen, isDelOpen, currentWord } = this.state;
         console.log(currentWord);
         return (
             <Grid container className={classes.container} justify='center' direction='row'>
@@ -117,7 +128,7 @@ class Userdefined extends Component {
                                                     <TableCell></TableCell>
                                                 </TableRow>
                                             }
-                                            {words && words.map(w => {
+                                            {words && words.slice(page * rowsPerPage, page*rowsPerPage+rowsPerPage).map(w => {
                                                 return (
                                                     <TableRow key={w.id}>
                                                         {isEditing &&
@@ -151,6 +162,20 @@ class Userdefined extends Component {
                                             })}
                                         </TableBody>
                                     </Table>
+                                    {words&&<TablePagination
+                                        component="div"
+                                        count={words.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        backIconButtonProps={{
+                                            'aria-label': 'Previous Page',
+                                        }}
+                                        nextIconButtonProps={{
+                                            'aria-label': 'Next Page',
+                                        }}
+                                        onChangePage={this.handleChangePage}
+                                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                                    />}
                                 </Grid>
                             }
                         </Grid>

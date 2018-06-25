@@ -49,7 +49,6 @@ class User(AbstractBaseUser):
 
     nickname = models.CharField(max_length=20, blank=False, default='用户')
     signature = models.CharField(max_length=100, blank=False, default='这个人很懒，什么都没有写~')
-    # TODO: correct avatar
     avatar = models.ImageField(default='user/aa.jpg', upload_to='user/')
 
     is_admin = models.BooleanField(default=False)
