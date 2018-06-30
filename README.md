@@ -35,11 +35,11 @@ B/S体系软件设计课程大程
 2. 安装Python依赖
 ```bash
 cd backend
-python install -r requirements.txt
+pip install -r requirements.txt
 ```
 3. 数据
-数据库初始化数据有两种方式
-	- 直接使用db.sqlite3
+数据库初始化数据有两种方式，建议直接使用db.sqlite3
+	- 直接使用backend/db.sqlite3（跳到步骤4即可）
 	- 删除数据库，重新migrate后
 ```bash
 python manage.py loaddata initial.json
@@ -63,3 +63,6 @@ npm start
 #### 访问网站
 
 `localhost:3000`
+
+测试账号：`0000003`
+密码：`123456789`
