@@ -4,6 +4,12 @@
 
 B/S体系软件设计课程大程
 
+## 技术栈
+Django
+REST framework
+React
+Redux
+
 ## 项目功能
 
 #### 用户注册、登录功能
